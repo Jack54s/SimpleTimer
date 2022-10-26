@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Simple Timer</string>
+    <string name="alarm">Alarm</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="your_sounds">Your sounds</string>
+    <string name="system_sounds">System sounds</string>
+    <string name="p_m">pm</string>
+    <string name="a_m">am</string>
+    <string name="no_sound">No sound</string>
+    <string name="error">Error: %s</string>
+    <string name="add_new_sound">Add a new sound</string>
+    <string name="remove">Remove</string>
+    <string name="no_app_found">No valid app found</string>
 </resources>
