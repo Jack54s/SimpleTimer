@@ -11,7 +11,15 @@ class Config(val context: Context) {
     private val prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE)
 
     companion object {
-        fun newInstance(context: Context) = Config(context)
+
+        private var config: Config? = null
+
+        fun newInstance(context: Context): Config {
+            config?.let { return it }
+            return Config(context).apply {
+                config = this
+            }
+        }
     }
 
     var timerSeconds: Int

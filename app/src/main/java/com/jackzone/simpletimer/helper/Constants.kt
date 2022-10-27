@@ -25,6 +25,7 @@ const val HIGHER_ALPHA = 0.75f
 
 const val SILENT = "silent"
 const val YOUR_ALARM_SOUNDS = "your_alarm_sounds"
+const val YOUR_ALARM_SOUNDS_MIN_ID = 1000
 
 // permissions
 const val PERMISSION_READ_STORAGE = 1
