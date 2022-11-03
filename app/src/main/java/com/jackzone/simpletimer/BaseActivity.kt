@@ -1,12 +1,16 @@
 package com.jackzone.simpletimer
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.jackzone.simpletimer.extension.*
+import com.jackzone.simpletimer.helper.PERMISSION_POST_NOTIFICATIONS
 import com.jackzone.simpletimer.helper.PERMISSION_READ_STORAGE
 import com.jackzone.simpletimer.helper.SILENT
+import com.jackzone.simpletimer.helper.isTiramisuPlus
 import com.jackzone.simpletimer.model.AlarmSound
 import java.util.ArrayList
 
@@ -81,5 +85,20 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
+    private fun hideNotification(id: Int) {
+        val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.cancel(id)
+    }
 
+    fun hideTimerNotification(timerId: Int) = hideNotification(timerId)
+
+    fun handleNotificationPermission(callback: (granted: Boolean) -> Unit) {
+        if (!isTiramisuPlus()) {
+            callback(true)
+        } else {
+            handlePermission(PERMISSION_POST_NOTIFICATIONS) { granted ->
+                callback(granted)
+            }
+        }
+    }
 }

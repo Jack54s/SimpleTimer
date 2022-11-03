@@ -5,6 +5,7 @@ import android.os.Looper
 import androidx.annotation.ChecksSdkIntAtLeast
 
 // shared preferences
+const val APP_RUN_COUNT = "app_run_count"
 const val PREFS_KEY = "Prefs"
 const val TIMER_SECONDS = "timer_seconds"
 const val TIMER_VIBRATE = "timer_vibrate"
@@ -49,8 +50,13 @@ const val PERMISSION_READ_MEDIA_IMAGES = 18
 const val PERMISSION_READ_MEDIA_VIDEO = 19
 const val PERMISSION_READ_MEDIA_AUDIO = 20
 
+const val INVALID_TIMER_ID = -1
+
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.Q)
 fun isQPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
+fun isTiramisuPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
 fun isOnMainThread() = Looper.myLooper() == Looper.getMainLooper()
 

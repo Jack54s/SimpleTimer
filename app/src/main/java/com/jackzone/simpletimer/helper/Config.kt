@@ -22,6 +22,10 @@ class Config(val context: Context) {
         }
     }
 
+    var appRunCount: Int
+        get() = prefs.getInt(APP_RUN_COUNT, 0)
+        set(appRunCount) = prefs.edit().putInt(APP_RUN_COUNT, appRunCount).apply()
+
     var timerSeconds: Int
         get() = prefs.getInt(TIMER_SECONDS, 300)
         set(lastTimerSeconds) = prefs.edit().putInt(TIMER_SECONDS, lastTimerSeconds).apply()

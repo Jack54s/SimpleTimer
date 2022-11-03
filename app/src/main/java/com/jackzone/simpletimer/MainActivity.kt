@@ -1,42 +1,50 @@
 package com.jackzone.simpletimer
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.OpenableColumns
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.room.util.CursorUtil
-import androidx.room.util.CursorUtil.getColumnIndex
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.jackzone.simpletimer.adapter.TimerAdapter
+import com.jackzone.simpletimer.database.TimerRepository
 import com.jackzone.simpletimer.dialog.EditTimerDialog
 import com.jackzone.simpletimer.extension.config
-import com.jackzone.simpletimer.helper.Config
+import com.jackzone.simpletimer.extension.hideKeyboard
+import com.jackzone.simpletimer.helper.DisabledItemChangeAnimator
 import com.jackzone.simpletimer.helper.PICK_AUDIO_FILE_INTENT_ID
 import com.jackzone.simpletimer.helper.YOUR_ALARM_SOUNDS_MIN_ID
 import com.jackzone.simpletimer.model.AlarmSound
 import com.jackzone.simpletimer.model.Timer
 import com.jackzone.simpletimer.model.TimerState
 import kotlinx.android.synthetic.main.activity_main.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.ArrayList
 
 class MainActivity : BaseActivity() {
 
+    private val INVALID_POSITION = -1
     private var currentEditAlarmDialog: EditTimerDialog? = null
+    private lateinit var timerAdapter: TimerAdapter
+    private var timerPositionToScrollTo = INVALID_POSITION
+    private val timerDb = TimerRepository(applicationContext)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
         setContentView(R.layout.activity_main)
         setSupportActionBar(tool_bar)
+        timer_list.itemAnimator = DisabledItemChangeAnimator()
         addBtn.setOnClickListener {
-            currentEditAlarmDialog = EditTimerDialog(this, Timer(
+            hideKeyboard()
+            openEditTimer(Timer(
                 null,
                 config.timerSeconds,
                 TimerState.Idle,
@@ -46,10 +54,17 @@ class MainActivity : BaseActivity() {
                 config.timerLabel ?: "",
                 System.currentTimeMillis(),
                 config.timerChannelId
-            )) {
-                currentEditAlarmDialog = null
+            ))
+        }
+//        timerAdapter = TimerAdapter(this, timer_list, ::openEditTimer)
+//        timer_list.adapter = timerAdapter
+//        refreshTimers()
+
+        // the initial timer is created asynchronously at first launch, make sure we show it once created
+        if (config?.appRunCount == 1) {
+            Handler(Looper.getMainLooper()).postDelayed({
                 refreshTimers()
-            }
+            }, 1000)
         }
     }
 
@@ -129,19 +144,27 @@ class MainActivity : BaseActivity() {
     }
 
     private fun refreshTimers(scrollToLatest: Boolean = false) {
-//        activity?.timerHelper?.getTimers { timers ->
-//            activity?.runOnUiThread {
-//                timerAdapter.submitList(timers) {
-//                    getView()?.post {
-//                        if (timerPositionToScrollTo != INVALID_POSITION && timerAdapter.itemCount > timerPositionToScrollTo) {
-//                            view.timers_list.scrollToPosition(timerPositionToScrollTo)
-//                            timerPositionToScrollTo = INVALID_POSITION
-//                        } else if (scrollToLatest) {
-//                            view.timers_list.scrollToPosition(timers.lastIndex)
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        timerDb.getTimers { timers ->
+            runOnUiThread {
+                timerAdapter.submitList(timers) {
+                    timer_list.post {
+                        if (timerPositionToScrollTo != INVALID_POSITION && timerAdapter.itemCount > timerPositionToScrollTo) {
+                            timer_list.scrollToPosition(timerPositionToScrollTo)
+                            timerPositionToScrollTo = INVALID_POSITION
+                        } else if (scrollToLatest) {
+                            timer_list.scrollToPosition(timers.lastIndex)
+                        }
+                    }
+                }
+            }
+        }
     }
+
+    private fun openEditTimer(timer: Timer) {
+        currentEditAlarmDialog = EditTimerDialog(this, timer) {
+            currentEditAlarmDialog = null
+            refreshTimers()
+        }
+    }
+
 }

@@ -13,4 +13,6 @@
     <string name="add_new_sound">Add a new sound</string>
     <string name="remove">Remove</string>
     <string name="no_app_found">No valid app found</string>
+    <string name="delete">Delete</string>
+    <string name="no_post_notifications_permissions">Permission to post notifications is required</string>
 </resources>

@@ -2,6 +2,7 @@ package com.jackzone.simpletimer.extension
 
 import android.graphics.Color
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 fun Int.adjustAlpha(factor: Float): Int {
@@ -11,6 +12,7 @@ fun Int.adjustAlpha(factor: Float): Int {
     val blue = Color.blue(this)
     return Color.argb(alpha, red, green, blue)
 }
+
 fun Int.getFormattedDuration(forceShowHours: Boolean = false): String {
     val sb = StringBuilder(8)
     val hours = this / 3600
@@ -27,3 +29,5 @@ fun Int.getFormattedDuration(forceShowHours: Boolean = false): String {
     sb.append(":").append(String.format(Locale.getDefault(), "%02d", seconds))
     return sb.toString()
 }
+
+val Int.secondsToMillis get() = TimeUnit.SECONDS.toMillis(this.toLong())
