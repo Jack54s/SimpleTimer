@@ -1,22 +1,32 @@
 package com.jackzone.simpletimer.extension
 
 import android.Manifest
-import android.app.Activity
+import android.app.*
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.text.SpannableString
 import android.text.format.DateFormat
 import android.text.style.RelativeSizeSpan
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.jackzone.simpletimer.R
+import com.jackzone.simpletimer.business.TimerService
 import com.jackzone.simpletimer.helper.*
 import com.jackzone.simpletimer.model.AlarmSound
+import com.jackzone.simpletimer.model.Timer
+import com.jackzone.simpletimer.receiver.HideTimerReceiver
+import java.util.*
 
 val Context.config: Config get() = Config.newInstance(applicationContext)
+val Context.timerDb: TimerService get() = TimerService(this)
 
 fun Context.getFormattedTime(passedSeconds: Int, showSeconds: Boolean, makeAmPmSmaller: Boolean): SpannableString {
     val use24HourFormat = DateFormat.is24HourFormat(this)
@@ -120,4 +130,98 @@ fun Context.showErrorToast(msg: String, length: Int = Toast.LENGTH_LONG) {
 
 fun Context.showErrorToast(exception: Exception, length: Int = Toast.LENGTH_LONG) {
     showErrorToast(exception.toString(), length)
+}
+
+fun Context.grantReadUriPermission(uriString: String) {
+    try {
+        // ensure custom reminder sounds play well
+        grantUriPermission("com.android.systemui", Uri.parse(uriString), Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    } catch (ignored: Exception) {
+    }
+}
+
+fun Context.getHideTimerPendingIntent(timerId: Int): PendingIntent {
+    val intent = Intent(this, HideTimerReceiver::class.java)
+    intent.putExtra(TIMER_ID, timerId)
+    return PendingIntent.getBroadcast(this, timerId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+}
+
+fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent, addDeleteIntent: Boolean): Notification {
+    var soundUri = timer.soundUri
+    if (soundUri == SILENT) {
+        soundUri = ""
+    } else {
+        grantReadUriPermission(soundUri)
+    }
+
+    val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    val channelId = timer.channelId ?: "simple_timer_channel_${soundUri}_${System.currentTimeMillis()}"
+    timerDb.insertOrUpdateTimer(timer.copy(channelId = channelId))
+
+    if (isOreoPlus()) {
+        try {
+            notificationManager.deleteNotificationChannel(channelId)
+        } catch (e: Exception) {
+        }
+
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_ALARM)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .setLegacyStreamType(AudioManager.STREAM_ALARM)
+            .build()
+
+        val name = getString(R.string.timer)
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        NotificationChannel(channelId, name, importance).apply {
+            setBypassDnd(true)
+            enableLights(true)
+            setSound(Uri.parse(soundUri), audioAttributes)
+
+            if (!timer.vibrate) {
+                vibrationPattern = longArrayOf(0L)
+            }
+
+            enableVibration(timer.vibrate)
+            notificationManager.createNotificationChannel(this)
+        }
+    }
+
+    val title = if (timer.label.isEmpty()) {
+        getString(R.string.timer)
+    } else {
+        timer.label
+    }
+
+    val builder = NotificationCompat.Builder(this)
+        .setContentTitle(title)
+        .setContentText(getString(R.string.time_expired))
+        .setSmallIcon(R.drawable.ic_hourglass_vector)
+        .setContentIntent(pendingIntent)
+        .setPriority(NotificationCompat.PRIORITY_MAX)
+        .setDefaults(Notification.DEFAULT_LIGHTS)
+        .setCategory(Notification.CATEGORY_EVENT)
+        .setAutoCancel(true)
+        .setSound(Uri.parse(soundUri), AudioManager.STREAM_ALARM)
+        .setChannelId(channelId)
+        .addAction(
+            R.drawable.ic_cross_vector,
+            getString(R.string.dismiss),
+            getHideTimerPendingIntent(timer.id!!)
+        )
+
+    builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+
+    if (timer.vibrate) {
+        val vibrateArray = LongArray(2) { 500 }
+        builder.setVibrate(vibrateArray)
+    }
+
+    val notification = builder.build()
+    notification.flags = notification.flags or Notification.FLAG_INSISTENT
+    return notification
+}
+
+fun Context.hideTimerNotification(id: Int) {
+    val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    manager.cancel(id)
 }

@@ -17,13 +17,14 @@ const val TIMER_MAX_REMINDER_SECS = "timer_max_reminder_secs"
 const val DEFAULT_MAX_TIMER_REMINDER_SECS = 60
 const val TIMER_LAST_CONFIG = "timer_last_config"
 
-
+const val TIMER_RUNNING_NOTIF_ID = 10000
 const val PICK_AUDIO_FILE_INTENT_ID = 10001
 
 const val LOWER_ALPHA = 0.25f
 const val MEDIUM_ALPHA = 0.5f
 const val HIGHER_ALPHA = 0.75f
 
+const val TIMER_ID = "timer_id"
 const val SILENT = "silent"
 const val YOUR_ALARM_SOUNDS = "your_alarm_sounds"
 const val YOUR_ALARM_SOUNDS_MIN_ID = 1000
@@ -51,6 +52,9 @@ const val PERMISSION_READ_MEDIA_VIDEO = 19
 const val PERMISSION_READ_MEDIA_AUDIO = 20
 
 const val INVALID_TIMER_ID = -1
+
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O)
+fun isOreoPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.Q)
 fun isQPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q

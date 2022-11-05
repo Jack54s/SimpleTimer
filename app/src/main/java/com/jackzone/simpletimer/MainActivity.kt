@@ -13,18 +13,21 @@ import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jackzone.simpletimer.adapter.TimerAdapter
-import com.jackzone.simpletimer.database.TimerRepository
 import com.jackzone.simpletimer.dialog.EditTimerDialog
 import com.jackzone.simpletimer.extension.config
 import com.jackzone.simpletimer.extension.hideKeyboard
+import com.jackzone.simpletimer.extension.timerDb
 import com.jackzone.simpletimer.helper.DisabledItemChangeAnimator
 import com.jackzone.simpletimer.helper.PICK_AUDIO_FILE_INTENT_ID
 import com.jackzone.simpletimer.helper.YOUR_ALARM_SOUNDS_MIN_ID
 import com.jackzone.simpletimer.model.AlarmSound
 import com.jackzone.simpletimer.model.Timer
+import com.jackzone.simpletimer.model.TimerEvent
 import com.jackzone.simpletimer.model.TimerState
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 import java.util.ArrayList
 
@@ -34,7 +37,6 @@ class MainActivity : BaseActivity() {
     private var currentEditAlarmDialog: EditTimerDialog? = null
     private lateinit var timerAdapter: TimerAdapter
     private var timerPositionToScrollTo = INVALID_POSITION
-    private val timerDb = TimerRepository(applicationContext)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,9 +58,9 @@ class MainActivity : BaseActivity() {
                 config.timerChannelId
             ))
         }
-//        timerAdapter = TimerAdapter(this, timer_list, ::openEditTimer)
-//        timer_list.adapter = timerAdapter
-//        refreshTimers()
+        timerAdapter = TimerAdapter(this, timer_list, ::openEditTimer)
+        timer_list.adapter = timerAdapter
+        refreshTimers()
 
         // the initial timer is created asynchronously at first launch, make sure we show it once created
         if (config?.appRunCount == 1) {
@@ -167,4 +169,8 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: TimerEvent.Refresh) {
+        refreshTimers()
+    }
 }

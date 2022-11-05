@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.dialog_edit_timer.view.*
 class EditTimerDialog(val activity: BaseActivity, val timer: Timer, val callback: () -> Unit) {
 
     private val view = activity.layoutInflater.inflate(R.layout.dialog_edit_timer, null)
-    private val timerService = TimerService(activity)
+    private val timerDb = activity.timerDb
 
     init {
         restoreLastAlarm()
@@ -60,12 +60,12 @@ class EditTimerDialog(val activity: BaseActivity, val timer: Timer, val callback
         AlertDialog.Builder(activity)
             .setPositiveButton(R.string.ok) { dialog, _ ->
                 timer.label = view.edit_timer.text.toString().trim()
-                timerService.insertOrUpdateTimer(timer) {
+                timerDb.insertOrUpdateTimer(timer) {
                     activity.config.timerLastConfig = timer
                     callback()
                     dialog.dismiss()
                 }
-                timerService.getTimers {
+                timerDb.getTimers {
                     Log.d("EditTimerDialog", it.toString())
                 }
             }

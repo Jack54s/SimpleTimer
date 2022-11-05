@@ -74,7 +74,7 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun handlePermission(permissionId: Int, callback: (granted: Boolean) -> Unit) {
+    private fun handlePermission(permissionId: Int, callback: (granted: Boolean) -> Unit) {
         actionOnPermission = null
         if (hasPermission(permissionId)) {
             callback(true)

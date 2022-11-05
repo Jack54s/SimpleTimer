@@ -1,8 +1,6 @@
 package com.jackzone.simpletimer.adapter
 
-import android.graphics.Color
 import android.view.*
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.recyclerview.widget.DiffUtil
@@ -38,7 +36,38 @@ class TimerAdapter(
         }
     }
 
-    private val config = activity.config
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        fun bindView(item: Timer, callback: (itemView: View, adapterPosition: Int) -> Unit): View {
+            return itemView.apply {
+                callback(this, adapterPosition)
+
+                setOnClickListener { viewClicked(item) }
+                setOnLongClickListener { viewLongClicked(); true }
+            }
+        }
+
+        private fun viewClicked(any: Timer) {
+            if (actModeCallback.isSelectable) {
+                val currentPosition = adapterPosition - positionOffset
+                val isSelected = selectedKeys.contains(getItemSelectionKey(currentPosition))
+                toggleItemSelection(!isSelected, currentPosition, true)
+            } else {
+                onItemClick.invoke(any)
+            }
+            lastLongPressedItem = -1
+        }
+
+        private fun viewLongClicked() {
+            val currentPosition = adapterPosition - positionOffset
+            if (!actModeCallback.isSelectable) {
+                activity.startActionMode(actModeCallback)
+            }
+
+            toggleItemSelection(true, currentPosition, true)
+            itemLongClicked(currentPosition)
+        }
+    }
+
     private val resources = activity.resources!!
     private val layoutInflater = activity.layoutInflater
     private var actModeCallback: MyActionModeCallback
@@ -49,11 +78,7 @@ class TimerAdapter(
     private var actBarTextView: TextView? = null
     private var lastLongPressedItem = -1
 
-    fun getActionMenuId() = R.menu.delete
-
-    fun prepareActionMode(menu: Menu) {}
-
-    fun actionItemPressed(id: Int) {
+    private fun actionItemPressed(id: Int) {
         if (selectedKeys.isEmpty()) {
             return
         }
@@ -62,10 +87,6 @@ class TimerAdapter(
             R.id.cab_delete -> deleteItems()
         }
     }
-
-    fun getSelectableItemCount() = itemCount
-
-    fun getIsItemSelectable(position: Int) = true
 
     fun getItemSelectionKey(position: Int) = getItem(position).id
 
@@ -84,8 +105,6 @@ class TimerAdapter(
 
     fun onActionModeDestroyed() {}
 
-    private fun isOneItemSelected() = selectedKeys.size == 1
-
     init {
         actModeCallback = object : MyActionModeCallback() {
             override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
@@ -94,31 +113,26 @@ class TimerAdapter(
             }
 
             override fun onCreateActionMode(actionMode: ActionMode, menu: Menu?): Boolean {
-                if (getActionMenuId() == 0) {
-                    return true
-                }
-
                 isSelectable = true
                 actMode = actionMode
                 actBarTextView = layoutInflater.inflate(R.layout.actionbar_title, null) as TextView
                 actBarTextView!!.layoutParams = ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
                 actMode!!.customView = actBarTextView
                 actBarTextView!!.setOnClickListener {
-                    if (getSelectableItemCount() == selectedKeys.size) {
+                    if (itemCount == selectedKeys.size) {
                         finishActMode()
                     } else {
                         selectAll()
                     }
                 }
 
-                activity.menuInflater.inflate(getActionMenuId(), menu)
+                activity.menuInflater.inflate(R.menu.delete, menu)
                 onActionModeCreated()
 
                 return true
             }
 
             override fun onPrepareActionMode(actionMode: ActionMode, menu: Menu): Boolean {
-                prepareActionMode(menu)
                 return true
             }
 
@@ -141,11 +155,7 @@ class TimerAdapter(
         setupDragListener(true)
     }
 
-    protected fun toggleItemSelection(select: Boolean, pos: Int, updateTitle: Boolean = true) {
-        if (select && !getIsItemSelectable(pos)) {
-            return
-        }
-
+    private fun toggleItemSelection(select: Boolean, pos: Int, updateTitle: Boolean = true) {
         val itemKey = getItemSelectionKey(pos) ?: return
         if ((select && selectedKeys.contains(itemKey)) || (!select && !selectedKeys.contains(itemKey))) {
             return
@@ -169,7 +179,7 @@ class TimerAdapter(
     }
 
     private fun updateTitle() {
-        val selectableItemCount = getSelectableItemCount()
+        val selectableItemCount = itemCount
         val selectedCount = Math.min(selectedKeys.size, selectableItemCount)
         val oldTitle = actBarTextView?.text
         val newTitle = "$selectedCount / $selectableItemCount"
@@ -194,7 +204,7 @@ class TimerAdapter(
         }
     }
 
-    protected fun getSelectedItemPositions(sortDescending: Boolean = true): ArrayList<Int> {
+    private fun getSelectedItemPositions(sortDescending: Boolean = true): ArrayList<Int> {
         val positions = ArrayList<Int>()
         val keys = selectedKeys.toList()
         keys.forEach {
@@ -210,7 +220,7 @@ class TimerAdapter(
         return positions
     }
 
-    protected fun selectAll() {
+    private fun selectAll() {
         val cnt = itemCount - positionOffset
         for (i in 0 until cnt) {
             toggleItemSelection(true, i, false)
@@ -219,7 +229,7 @@ class TimerAdapter(
         updateTitle()
     }
 
-    protected fun setupDragListener(enable: Boolean) {
+    private fun setupDragListener(enable: Boolean) {
         if (enable) {
             recyclerView.setupDragListener(object : MyRecyclerView.MyDragListener {
                 override fun selectItem(position: Int) {
@@ -243,7 +253,7 @@ class TimerAdapter(
         }
     }
 
-    protected fun selectItemRange(from: Int, to: Int, min: Int, max: Int) {
+    private fun selectItemRange(from: Int, to: Int, min: Int, max: Int) {
         if (from == to) {
             (min..max).filter { it != from }.forEach { toggleItemSelection(false, it, true) }
             return
@@ -301,57 +311,11 @@ class TimerAdapter(
         actMode?.finish()
     }
 
-    protected fun createViewHolder(layoutType: Int, parent: ViewGroup?): ViewHolder {
-        val view = layoutInflater.inflate(layoutType, parent, false)
-        return ViewHolder(view)
-    }
-
-    protected fun bindViewHolder(holder: ViewHolder) {
-        holder.itemView.tag = holder
-    }
-
-    protected fun removeSelectedItems(positions: ArrayList<Int>) {
+    private fun removeSelectedItems(positions: ArrayList<Int>) {
         positions.forEach {
             notifyItemRemoved(it)
         }
         finishActMode()
-    }
-
-    open inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bindView(item: Timer, allowSingleClick: Boolean, allowLongClick: Boolean, callback: (itemView: View, adapterPosition: Int) -> Unit): View {
-            return itemView.apply {
-                callback(this, adapterPosition)
-
-                if (allowSingleClick) {
-                    setOnClickListener { viewClicked(item) }
-                    setOnLongClickListener { if (allowLongClick) viewLongClicked() else viewClicked(item); true }
-                } else {
-                    setOnClickListener(null)
-                    setOnLongClickListener(null)
-                }
-            }
-        }
-
-        private fun viewClicked(any: Timer) {
-            if (actModeCallback.isSelectable) {
-                val currentPosition = adapterPosition - positionOffset
-                val isSelected = selectedKeys.contains(getItemSelectionKey(currentPosition))
-                toggleItemSelection(!isSelected, currentPosition, true)
-            } else {
-                onItemClick.invoke(any)
-            }
-            lastLongPressedItem = -1
-        }
-
-        private fun viewLongClicked() {
-            val currentPosition = adapterPosition - positionOffset
-            if (!actModeCallback.isSelectable) {
-                activity.startActionMode(actModeCallback)
-            }
-
-            toggleItemSelection(true, currentPosition, true)
-            itemLongClicked(currentPosition)
-        }
     }
 
     private fun deleteItems() {
@@ -411,6 +375,7 @@ class TimerAdapter(
                 }
             }
             val drawableId = if (state is TimerState.Running) R.drawable.ic_pause_vector else R.drawable.ic_play_vector
+            timer_play_pause.setImageDrawable(activity.resources.getDrawable(drawableId))
         }
     }
 
@@ -418,12 +383,16 @@ class TimerAdapter(
         EventBus.getDefault().post(TimerEvent.Reset(timer.id!!))
         activity.hideTimerNotification(timer.id!!)
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = createViewHolder(R.layout.item_timer, parent)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = layoutInflater.inflate(R.layout.item_timer, parent, false)
+        return ViewHolder(view)
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindView(getItem(position), true, true) { itemView, _ ->
+        holder.bindView(getItem(position)) { itemView, _ ->
             setupView(itemView, getItem(position))
         }
-        bindViewHolder(holder)
+        holder.itemView.tag = holder
     }
 }
