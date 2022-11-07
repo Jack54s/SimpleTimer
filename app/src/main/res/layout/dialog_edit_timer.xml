@@ -23,6 +23,7 @@
             android:padding="@dimen/activity_margin"
             android:textSize="@dimen/bigger_text_size"
             android:text="05:00"
+            android:textColor="@color/color_text"
             app:layout_constraintTop_toTopOf="parent" />
 
         <RelativeLayout
@@ -68,6 +69,7 @@
             android:padding="@dimen/activity_margin"
             android:textSize="@dimen/bigger_text_size"
             android:text="Default Alarm"
+            android:textColor="@color/color_text"
             app:layout_constraintTop_toBottomOf="@+id/edit_timer_vibrate_holder" />
 
         <LinearLayout
@@ -118,7 +120,8 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textSize="@dimen/normal_text_size"
-                    android:textCursorDrawable="@drawable/line" />
+                    android:textCursorDrawable="@drawable/line"
+                    android:theme="@style/CustomTextCursor" />
 
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>

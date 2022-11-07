@@ -1,7 +1,7 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SimpleTimer" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.SimpleTimer" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/white</item>
@@ -18,8 +18,12 @@
         <item name="colorAccent">@color/color_text</item>
     </style>
     <style name="CustomToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:textSize">36sp</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:textColor">@color/color_text</item>
     </style>
     <style name="CustomFloatingButtonTheme" parent="@style/Theme.MaterialComponents.DayNight.NoActionBar">
+    </style>
+    <style name="CustomTextCursor">
+        <item name="colorPrimary">@color/color_text</item>
     </style>
 </resources>

@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.OpenableColumns
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -44,7 +42,7 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(tool_bar)
         timer_list.itemAnimator = DisabledItemChangeAnimator()
-        addBtn.setOnClickListener {
+        add_btn.setOnClickListener {
             hideKeyboard()
             openEditTimer(Timer(
                 null,
@@ -58,6 +56,9 @@ class MainActivity : BaseActivity() {
                 config.timerChannelId
             ))
         }
+        setting.setOnClickListener {
+            Toast.makeText(this, "Setting", Toast.LENGTH_SHORT).show()
+        }
         timerAdapter = TimerAdapter(this, timer_list, ::openEditTimer)
         timer_list.adapter = timerAdapter
         refreshTimers()
@@ -68,19 +69,6 @@ class MainActivity : BaseActivity() {
                 refreshTimers()
             }, 1000)
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.toolbar, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            //TODO
-            R.id.setting -> Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show()
-        }
-        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
