@@ -3,40 +3,46 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
+        android:background="@color/color_bg"
         app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tool_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="40dp"
-            android:fitsSystemWindows="true"
             app:title="@string/app_name"
             app:menu="@menu/toolbar"
             app:titleTextAppearance="@style/CustomToolbarTheme" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.jackzone.simpletimer.view.MyRecyclerView
-        android:id="@+id/timer_list"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/fab_list_bottom_padding"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:itemCount="3"
-        tools:listitem="@layout/item_timer" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.jackzone.simpletimer.view.MyRecyclerView
+            android:id="@+id/timer_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/fab_list_bottom_padding"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_timer" />
+
+    </RelativeLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addBtn"
@@ -44,6 +50,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="12dp"
-        android:src="@drawable/ic_plus_vector" />
+        android:theme="@style/CustomFloatingButtonTheme"
+        android:src="@drawable/ic_plus_vector"
+        app:backgroundTint="@color/color_bg" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

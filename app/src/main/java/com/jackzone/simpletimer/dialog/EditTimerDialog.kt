@@ -12,33 +12,45 @@ import com.jackzone.simpletimer.extension.*
 import com.jackzone.simpletimer.helper.PICK_AUDIO_FILE_INTENT_ID
 import com.jackzone.simpletimer.model.AlarmSound
 import com.jackzone.simpletimer.model.Timer
+import com.jackzone.simpletimer.model.TimerState
 import kotlinx.android.synthetic.main.dialog_edit_timer.view.*
 
-class EditTimerDialog(val activity: BaseActivity, val timer: Timer, val callback: () -> Unit) {
+class EditTimerDialog(private val activity: BaseActivity, val timer: Timer, val callback: () -> Unit) {
 
     private val view = activity.layoutInflater.inflate(R.layout.dialog_edit_timer, null)
     private val timerDb = activity.timerDb
+    private val tempTimer: Timer
 
     init {
         restoreLastAlarm()
+        tempTimer = Timer(
+            timer.id,
+            timer.seconds,
+            timer.state,
+            timer.vibrate,
+            timer.soundUri,
+            timer.soundTitle,
+            timer.label,
+            timer.createdAt,
+            timer.channelId
+        )
         updateAlarmTime()
 
         view.apply {
-            edit_timer_initial_time.text = timer.seconds.getFormattedDuration()
+            edit_timer_initial_time.text = tempTimer.seconds.getFormattedDuration()
             edit_timer_initial_time.setOnClickListener {
-                changeDuration(timer)
+                changeDuration(tempTimer)
             }
 
-            edit_timer_vibrate.isChecked = timer.vibrate
+            edit_timer_vibrate.isChecked = tempTimer.vibrate
             edit_timer_vibrate_holder.setOnClickListener {
                 edit_timer_vibrate.toggle()
-                timer.vibrate = edit_timer_vibrate.isChecked
-                timer.channelId = null
+                tempTimer.channelId = null
             }
 
-            edit_timer_sound.text = timer.soundTitle
+            edit_timer_sound.text = tempTimer.soundTitle
             edit_timer_sound.setOnClickListener {
-                SelectAlarmSoundDialog(activity, timer.soundUri, AudioManager.STREAM_ALARM, PICK_AUDIO_FILE_INTENT_ID,
+                SelectAlarmSoundDialog(activity, tempTimer.soundUri, AudioManager.STREAM_ALARM, PICK_AUDIO_FILE_INTENT_ID,
                     RingtoneManager.TYPE_ALARM, true,
                     onAlarmPicked = { sound ->
                         if (sound != null) {
@@ -46,27 +58,27 @@ class EditTimerDialog(val activity: BaseActivity, val timer: Timer, val callback
                         }
                     },
                     onAlarmSoundDeleted = { sound ->
-                        if (timer.soundUri == sound.uri) {
+                        if (tempTimer.soundUri == sound.uri) {
                             val defaultAlarm = context.getDefaultAlarmSound(RingtoneManager.TYPE_ALARM)
                             updateAlarmSound(defaultAlarm)
                         }
-
-//                        context.checkAlarmsWithDeletedSoundUri(sound.uri)
                     })
             }
 
-            edit_timer.setText(timer.label)
+            edit_timer.setText(tempTimer.label)
         }
         AlertDialog.Builder(activity)
             .setPositiveButton(R.string.ok) { dialog, _ ->
+                timer.seconds = tempTimer.seconds
+                timer.vibrate = view.edit_timer_vibrate.isChecked
+                timer.soundUri = tempTimer.soundUri
+                timer.soundTitle = tempTimer.soundTitle
                 timer.label = view.edit_timer.text.toString().trim()
+                timer.channelId = tempTimer.channelId
                 timerDb.insertOrUpdateTimer(timer) {
                     activity.config.timerLastConfig = timer
                     callback()
                     dialog.dismiss()
-                }
-                timerDb.getTimers {
-                    Log.d("EditTimerDialog", it.toString())
                 }
             }
             .setNegativeButton(R.string.cancel, null)
@@ -96,13 +108,13 @@ class EditTimerDialog(val activity: BaseActivity, val timer: Timer, val callback
     }
 
     private fun updateAlarmTime() {
-        view.edit_timer_initial_time.text = activity.getFormattedTime(timer.seconds * 60, false, true)
+        view.edit_timer_initial_time.text = activity.getFormattedTime(tempTimer.seconds * 60, false, true)
     }
 
     fun updateAlarmSound(alarmSound: AlarmSound) {
-        timer.soundTitle = alarmSound.title
-        timer.soundUri = alarmSound.uri
-        timer.channelId = null
+        tempTimer.soundTitle = alarmSound.title
+        tempTimer.soundUri = alarmSound.uri
+        tempTimer.channelId = null
         view.edit_timer_sound.text = alarmSound.title
     }
 }

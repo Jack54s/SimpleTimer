@@ -146,7 +146,7 @@ fun Context.getHideTimerPendingIntent(timerId: Int): PendingIntent {
     return PendingIntent.getBroadcast(this, timerId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 }
 
-fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent, addDeleteIntent: Boolean): Notification {
+fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent): Notification {
     var soundUri = timer.soundUri
     if (soundUri == SILENT) {
         soundUri = ""
@@ -186,10 +186,8 @@ fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent, add
         }
     }
 
-    val title = if (timer.label.isEmpty()) {
+    val title = timer.label.ifEmpty {
         getString(R.string.timer)
-    } else {
-        timer.label
     }
 
     val builder = NotificationCompat.Builder(this)

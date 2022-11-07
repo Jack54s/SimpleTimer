@@ -15,8 +15,11 @@ import com.jackzone.simpletimer.model.Timer
 import com.jackzone.simpletimer.model.TimerEvent
 import com.jackzone.simpletimer.model.TimerState
 import com.jackzone.simpletimer.view.MyRecyclerView
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_timer.view.*
 import org.greenrobot.eventbus.EventBus
+import kotlin.math.max
+import kotlin.math.min
 
 class TimerAdapter(
     val activity: BaseActivity,
@@ -101,9 +104,13 @@ class TimerAdapter(
         return position
     }
 
-    fun onActionModeCreated() {}
+    private fun onActionModeCreated() {
+        activity.tool_bar.visibility = View.INVISIBLE
+    }
 
-    fun onActionModeDestroyed() {}
+    private fun onActionModeDestroyed() {
+        activity.tool_bar.visibility = View.VISIBLE
+    }
 
     init {
         actModeCallback = object : MyActionModeCallback() {
@@ -194,8 +201,8 @@ class TimerAdapter(
         lastLongPressedItem = if (lastLongPressedItem == -1) {
             position
         } else {
-            val min = Math.min(lastLongPressedItem, position)
-            val max = Math.max(lastLongPressedItem, position)
+            val min = min(lastLongPressedItem, position)
+            val max = max(lastLongPressedItem, position)
             for (i in min..max) {
                 toggleItemSelection(true, i, false)
             }
