@@ -1,6 +1,7 @@
 package com.jackzone.simpletimer.adapter
 
 import android.view.*
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.recyclerview.widget.DiffUtil
@@ -63,7 +64,7 @@ class TimerAdapter(
         private fun viewLongClicked() {
             val currentPosition = adapterPosition - positionOffset
             if (!actModeCallback.isSelectable) {
-                activity.startActionMode(actModeCallback)
+                activity.startActionMode(actModeCallback, ActionMode.TYPE_FLOATING)
             }
 
             toggleItemSelection(true, currentPosition, true)
@@ -78,7 +79,7 @@ class TimerAdapter(
     private var positionOffset = 0
     private var actMode: ActionMode? = null
 
-    private var actBarTextView: TextView? = null
+    private var deleteView: RelativeLayout? = null
     private var lastLongPressedItem = -1
 
     private fun actionItemPressed(id: Int) {
@@ -104,12 +105,25 @@ class TimerAdapter(
         return position
     }
 
+    private fun toggleDeleteMenu() {
+        activity.apply {
+            delete_menu.toggle()
+            setting.toggle()
+        }
+    }
+
     private fun onActionModeCreated() {
-        activity.tool_bar.visibility = View.INVISIBLE
+        toggleDeleteMenu()
+        activity.apply {
+            collapsing_toolbar.setCollapsedTitleTextColor(getColor(android.R.color.transparent))
+        }
     }
 
     private fun onActionModeDestroyed() {
-        activity.tool_bar.visibility = View.VISIBLE
+        toggleDeleteMenu()
+        activity.apply {
+            collapsing_toolbar.setCollapsedTitleTextColor(getColor(R.color.color_text))
+        }
     }
 
     init {
@@ -122,18 +136,6 @@ class TimerAdapter(
             override fun onCreateActionMode(actionMode: ActionMode, menu: Menu?): Boolean {
                 isSelectable = true
                 actMode = actionMode
-                actBarTextView = layoutInflater.inflate(R.layout.actionbar_title, null) as TextView
-                actBarTextView!!.layoutParams = ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                actMode!!.customView = actBarTextView
-                actBarTextView!!.setOnClickListener {
-                    if (itemCount == selectedKeys.size) {
-                        finishActMode()
-                    } else {
-                        selectAll()
-                    }
-                }
-
-                activity.menuInflater.inflate(R.menu.delete, menu)
                 onActionModeCreated()
 
                 return true
@@ -153,7 +155,7 @@ class TimerAdapter(
                 }
                 updateTitle()
                 selectedKeys.clear()
-                actBarTextView?.text = ""
+                activity.delete_title?.text = ""
                 actMode = null
                 lastLongPressedItem = -1
                 onActionModeDestroyed()
@@ -187,11 +189,12 @@ class TimerAdapter(
 
     private fun updateTitle() {
         val selectableItemCount = itemCount
-        val selectedCount = Math.min(selectedKeys.size, selectableItemCount)
-        val oldTitle = actBarTextView?.text
+        val selectedCount = min(selectedKeys.size, selectableItemCount)
+        val deleteTitle = activity.delete_title
+        val oldTitle = deleteTitle.text
         val newTitle = "$selectedCount / $selectableItemCount"
         if (oldTitle != newTitle) {
-            actBarTextView?.text = newTitle
+            deleteTitle.text = newTitle
             actMode?.invalidate()
         }
     }
@@ -314,7 +317,7 @@ class TimerAdapter(
         }
     }
 
-    fun finishActMode() {
+    private fun finishActMode() {
         actMode?.finish()
     }
 

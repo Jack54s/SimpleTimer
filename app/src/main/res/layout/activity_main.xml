@@ -25,6 +25,7 @@
             app:statusBarScrim="@color/color_bg"
             app:title="@string/app_name"
             app:expandedTitleGravity="top|start"
+            app:expandedTitleTextColor="@color/color_text"
             app:expandedTitleTextAppearance="@style/CustomToolbarTheme"
             app:collapsedTitleTextColor="@color/color_text"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -34,6 +35,51 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin" />
+
+            <RelativeLayout
+                android:id="@+id/delete_menu"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="bottom|end"
+                android:visibility="gone"
+                app:layout_collapseMode="pin">
+
+                <ImageButton
+                    android:id="@+id/cancel_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_cross_vector"
+                    android:background="@android:color/transparent"
+                    app:tint="@color/color_text" />
+
+                <TextView
+                    android:id="@+id/delete_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/cancel_btn"
+                    android:background="?attr/selectableItemBackground"
+                    android:textColor="@color/color_text"
+                    android:text="selected"
+                    android:textSize="@dimen/actionbar_text_size" />
+
+                <ImageButton
+                    android:id="@+id/select_all_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_select_all_vector"
+                    android:background="@android:color/transparent"
+                    app:tint="@color/color_text" />
+
+            </RelativeLayout>
 
             <ImageButton
                 android:id="@+id/setting"
@@ -78,5 +124,15 @@
         android:src="@drawable/ic_plus_vector"
         app:tint="@color/color_bg"
         app:backgroundTint="@color/black" />
+
+    <Button
+        android:id="@+id/delete_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center_horizontal"
+        android:text="@string/delete"
+        android:textColor="@color/color_text"
+        android:textSize="@dimen/normal_text_size" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -19,7 +19,6 @@
     </style>
     <style name="CustomToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:textSize">40sp</item>
-        <item name="android:textColor">@color/color_text</item>
     </style>
     <style name="CustomFloatingButtonTheme" parent="@style/Theme.MaterialComponents.DayNight.NoActionBar">
     </style>
