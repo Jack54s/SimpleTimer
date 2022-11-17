@@ -24,7 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SimpleTimer"
         tools:targetApi="31">
-
+        <activity
+            android:name=".SettingActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

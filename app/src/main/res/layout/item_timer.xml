@@ -22,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
-            android:textSize="@dimen/alarm_text_size"
+            android:textSize="@dimen/timer_text_size"
             android:textColor="@color/color_text"
             app:layout_constraintEnd_toStartOf="@id/timer_reset"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,8 +40,7 @@
             android:textColor="@color/color_text"
             app:layout_constraintEnd_toEndOf="@id/timer_time"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/timer_time"
-            tools:text="Cook rice" />
+            app:layout_constraintTop_toBottomOf="@id/timer_time" />
 
         <ImageView
             android:id="@+id/timer_reset"

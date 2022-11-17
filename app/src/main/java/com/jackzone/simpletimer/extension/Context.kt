@@ -5,6 +5,7 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.RingtoneManager
@@ -222,4 +223,78 @@ fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent): No
 fun Context.hideTimerNotification(id: Int) {
     val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     manager.cancel(id)
+}
+
+fun Context.formatSecondsToTimeString(totalSeconds: Int): String {
+    val days = totalSeconds / DAY_SECONDS
+    val hours = (totalSeconds % DAY_SECONDS) / HOUR_SECONDS
+    val minutes = (totalSeconds % HOUR_SECONDS) / MINUTE_SECONDS
+    val seconds = totalSeconds % MINUTE_SECONDS
+    val timesString = StringBuilder()
+    if (days > 0) {
+        val daysString = String.format(resources.getQuantityString(R.plurals.days, days, days))
+        timesString.append("$daysString, ")
+    }
+
+    if (hours > 0) {
+        val hoursString = String.format(resources.getQuantityString(R.plurals.hours, hours, hours))
+        timesString.append("$hoursString, ")
+    }
+
+    if (minutes > 0) {
+        val minutesString = String.format(resources.getQuantityString(R.plurals.minutes, minutes, minutes))
+        timesString.append("$minutesString, ")
+    }
+
+    if (seconds > 0) {
+        val secondsString = String.format(resources.getQuantityString(R.plurals.seconds, seconds, seconds))
+        timesString.append(secondsString)
+    }
+
+    var result = timesString.toString().trim().trimEnd(',')
+    if (result.isEmpty()) {
+        result = String.format(resources.getQuantityString(R.plurals.minutes, 0, 0))
+    }
+    return result
+}
+
+fun Context.getFormattedSeconds(seconds: Int, showBefore: Boolean = true) = when (seconds) {
+    -1 -> getString(R.string.no_reminder)
+    0 -> getString(R.string.at_start)
+    else -> {
+        when {
+            seconds < 0 && seconds > -60 * 60 * 24 -> {
+                val minutes = -seconds / 60
+                getString(R.string.during_day_at).format(minutes / 60, minutes % 60)
+            }
+            seconds % YEAR_SECONDS == 0 -> {
+                val base = if (showBefore) R.plurals.years_before else R.plurals.by_years
+                resources.getQuantityString(base, seconds / YEAR_SECONDS, seconds / YEAR_SECONDS)
+            }
+            seconds % MONTH_SECONDS == 0 -> {
+                val base = if (showBefore) R.plurals.months_before else R.plurals.by_months
+                resources.getQuantityString(base, seconds / MONTH_SECONDS, seconds / MONTH_SECONDS)
+            }
+            seconds % WEEK_SECONDS == 0 -> {
+                val base = if (showBefore) R.plurals.weeks_before else R.plurals.by_weeks
+                resources.getQuantityString(base, seconds / WEEK_SECONDS, seconds / WEEK_SECONDS)
+            }
+            seconds % DAY_SECONDS == 0 -> {
+                val base = if (showBefore) R.plurals.days_before else R.plurals.by_days
+                resources.getQuantityString(base, seconds / DAY_SECONDS, seconds / DAY_SECONDS)
+            }
+            seconds % HOUR_SECONDS == 0 -> {
+                val base = if (showBefore) R.plurals.hours_before else R.plurals.by_hours
+                resources.getQuantityString(base, seconds / HOUR_SECONDS, seconds / HOUR_SECONDS)
+            }
+            seconds % MINUTE_SECONDS == 0 -> {
+                val base = if (showBefore) R.plurals.minutes_before else R.plurals.by_minutes
+                resources.getQuantityString(base, seconds / MINUTE_SECONDS, seconds / MINUTE_SECONDS)
+            }
+            else -> {
+                val base = if (showBefore) R.plurals.seconds_before else R.plurals.by_seconds
+                resources.getQuantityString(base, seconds, seconds)
+            }
+        }
+    }
 }

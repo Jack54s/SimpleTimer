@@ -1,6 +1,5 @@
 package com.jackzone.simpletimer.adapter
 
-import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -105,8 +104,8 @@ class TimerAdapter(
 
     private fun toggleDeleteMenu(visible: Boolean) {
         activity.apply {
-            delete_menu.toggle(visible)
-            setting.toggle(!visible)
+            delete_menu.beVisibleIf(visible)
+            setting.beVisibleIf(!visible)
         }
     }
 
@@ -425,8 +424,8 @@ class TimerAdapter(
     override fun onAnimationStart(animation: Animation) {
         if (actModeCallback.isSelectable) {
             activity.apply {
-                add_btn.toggle(false)
-                delete_btn.toggle(true)
+                add_btn.beVisibleIf(false)
+                delete_btn.beVisibleIf(true)
             }
         }
     }
@@ -434,8 +433,8 @@ class TimerAdapter(
     override fun onAnimationEnd(animation: Animation?) {
         if (!actModeCallback.isSelectable) {
             activity.apply {
-                add_btn.toggle(true)
-                delete_btn.toggle(false)
+                add_btn.beVisibleIf(true)
+                delete_btn.beVisibleIf(false)
             }
         }
     }

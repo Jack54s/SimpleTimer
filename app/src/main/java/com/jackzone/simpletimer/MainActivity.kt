@@ -59,7 +59,7 @@ class MainActivity : BaseActivity() {
             ))
         }
         setting.setOnClickListener {
-            Toast.makeText(this, "Setting", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, SettingActivity::class.java))
         }
         timerAdapter = TimerAdapter(this, timer_list, ::openEditTimer)
         timer_list.adapter = timerAdapter

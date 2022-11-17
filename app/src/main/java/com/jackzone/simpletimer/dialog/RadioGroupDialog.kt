@@ -13,9 +13,9 @@ import com.jackzone.simpletimer.model.RadioItem
 import kotlinx.android.synthetic.main.dialog_radio_group.view.*
 
 class RadioGroupDialog(
-    val activity: Activity,
-    val items: ArrayList<RadioItem>,
-    val checkedItemId: Int = -1,
+    private val activity: Activity,
+    private val items: ArrayList<RadioItem>,
+    private val checkedItemId: Int = -1,
     showOKButton: Boolean = false,
     val cancelCallback: (() -> Unit)? = null, val callback: (newValue: Any) -> Unit
 ) {
