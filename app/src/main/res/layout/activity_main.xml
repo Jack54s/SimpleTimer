@@ -49,12 +49,13 @@
                     android:id="@+id/cancel_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="@dimen/activity_margin"
+                    android:layout_marginEnd="@dimen/activity_margin"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/ic_cross_vector"
                     android:background="@android:color/transparent"
+                    android:contentDescription="@string/cancel"
                     app:tint="@color/color_text" />
 
                 <TextView
@@ -65,14 +66,13 @@
                     android:layout_toRightOf="@id/cancel_btn"
                     android:background="?attr/selectableItemBackground"
                     android:textColor="@color/color_text"
-                    android:text="selected"
                     android:textSize="@dimen/actionbar_text_size" />
 
                 <ImageButton
                     android:id="@+id/select_all_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="@dimen/activity_margin"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/ic_select_all_vector"
@@ -86,8 +86,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="@dimen/activity_margin"
+                android:layout_marginEnd="@dimen/activity_margin"
                 android:src="@drawable/ic_settings_cog_vector"
                 android:background="@android:color/transparent"
                 app:tint="@color/color_text" />
@@ -125,14 +125,26 @@
         app:tint="@color/color_bg"
         app:backgroundTint="@color/black" />
 
-    <Button
-        android:id="@+id/delete_btn"
+    <FrameLayout
+        android:id="@+id/delete_btn_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="center_horizontal"
-        android:text="@string/delete"
-        android:textColor="@color/color_text"
-        android:textSize="@dimen/normal_text_size" />
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/delete_btn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_button_size"
+            android:layout_marginBottom="-6dp"
+            android:layout_gravity="bottom"
+            android:visibility="gone"
+            android:gravity="center"
+            android:text="@string/delete"
+            android:textAllCaps="false"
+            android:textColor="@color/color_text"
+            android:textSize="@dimen/normal_text_size"
+            app:layout_behavior="@string/bottom_sheet_behavior"
+            app:elevation="2dp" />
+
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

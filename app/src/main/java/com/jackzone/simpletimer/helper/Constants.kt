@@ -16,6 +16,7 @@ const val TIMER_LABEL = "timer_label"
 const val TIMER_MAX_REMINDER_SECS = "timer_max_reminder_secs"
 const val DEFAULT_MAX_TIMER_REMINDER_SECS = 60
 const val TIMER_LAST_CONFIG = "timer_last_config"
+const val PREVENT_PHONE_FROM_SLEEPING = "prevent_phone_from_sleeping"
 
 const val TIMER_RUNNING_NOTIF_ID = 10000
 const val PICK_AUDIO_FILE_INTENT_ID = 10001

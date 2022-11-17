@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.OpenableColumns
+import android.view.WindowManager
 import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -38,8 +39,9 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        EventBus.getDefault().register(this)
         setContentView(R.layout.activity_main)
+        config.appRunCount++
+        EventBus.getDefault().register(this)
         setSupportActionBar(tool_bar)
         timer_list.itemAnimator = DisabledItemChangeAnimator()
         add_btn.setOnClickListener {
@@ -68,6 +70,20 @@ class MainActivity : BaseActivity() {
             Handler(Looper.getMainLooper()).postDelayed({
                 refreshTimers()
             }, 1000)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (config.preventPhoneFromSleeping) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (config.preventPhoneFromSleeping) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 

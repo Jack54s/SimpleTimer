@@ -1,9 +1,9 @@
 package com.jackzone.simpletimer.adapter
 
+import android.util.Log
 import android.view.*
-import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.appcompat.app.ActionBar
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ListAdapter
@@ -26,7 +26,7 @@ class TimerAdapter(
     val activity: BaseActivity,
     private val recyclerView: MyRecyclerView,
     private val onItemClick: (Timer) -> Unit,
-) : ListAdapter<Timer, TimerAdapter.ViewHolder>(diffUtil) {
+) : ListAdapter<Timer, TimerAdapter.ViewHolder>(diffUtil), Animation.AnimationListener {
 
     companion object {
         private val diffUtil = object : DiffUtil.ItemCallback<Timer>() {
@@ -78,8 +78,6 @@ class TimerAdapter(
     private var selectedKeys = LinkedHashSet<Int>()
     private var positionOffset = 0
     private var actMode: ActionMode? = null
-
-    private var deleteView: RelativeLayout? = null
     private var lastLongPressedItem = -1
 
     private fun actionItemPressed(id: Int) {
@@ -92,9 +90,9 @@ class TimerAdapter(
         }
     }
 
-    fun getItemSelectionKey(position: Int) = getItem(position).id
+    private fun getItemSelectionKey(position: Int) = getItem(position).id
 
-    fun getItemKeyPosition(key: Int): Int {
+    private fun getItemKeyPosition(key: Int): Int {
         var position = -1
         for (i in 0 until itemCount) {
             if (key == getItem(i).id) {
@@ -105,28 +103,47 @@ class TimerAdapter(
         return position
     }
 
-    private fun toggleDeleteMenu() {
+    private fun toggleDeleteMenu(visible: Boolean) {
         activity.apply {
-            delete_menu.toggle()
-            setting.toggle()
+            delete_menu.toggle(visible)
+            setting.toggle(!visible)
         }
     }
 
     private fun onActionModeCreated() {
-        toggleDeleteMenu()
-        activity.apply {
-            collapsing_toolbar.setCollapsedTitleTextColor(getColor(android.R.color.transparent))
+        toggleDeleteMenu(true)
+        activity.let {
+            it.collapsing_toolbar.setCollapsedTitleTextColor(it.getColor(android.R.color.transparent))
+            val inAnim = AnimationUtils.loadAnimation(it, R.anim.anim_bottom_button_in)
+            inAnim.setAnimationListener(this)
+            it.delete_btn.startAnimation(inAnim)
         }
     }
 
     private fun onActionModeDestroyed() {
-        toggleDeleteMenu()
-        activity.apply {
-            collapsing_toolbar.setCollapsedTitleTextColor(getColor(R.color.color_text))
+        toggleDeleteMenu(false)
+        activity.let {
+            it.collapsing_toolbar.setCollapsedTitleTextColor(it.getColor(R.color.color_text))
+            val outAnim = AnimationUtils.loadAnimation(it, R.anim.anim_bottom_button_out)
+            outAnim.setAnimationListener(this)
+            it.delete_btn.startAnimation(outAnim)
         }
     }
 
     init {
+        activity.select_all_btn.setOnClickListener {
+            if (itemCount == selectedKeys.size) {
+                finishActMode()
+            } else {
+                selectAll()
+            }
+        }
+        activity.cancel_btn.setOnClickListener {
+            finishActMode()
+        }
+        activity.delete_btn.setOnClickListener {
+            if (selectedKeys.isNotEmpty()) deleteItems()
+        }
         actModeCallback = object : MyActionModeCallback() {
             override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
                 actionItemPressed(item.itemId)
@@ -137,7 +154,6 @@ class TimerAdapter(
                 isSelectable = true
                 actMode = actionMode
                 onActionModeCreated()
-
                 return true
             }
 
@@ -199,7 +215,7 @@ class TimerAdapter(
         }
     }
 
-    fun itemLongClicked(position: Int) {
+    private fun itemLongClicked(position: Int) {
         recyclerView.setDragSelectActive(position)
         lastLongPressedItem = if (lastLongPressedItem == -1) {
             position
@@ -249,8 +265,8 @@ class TimerAdapter(
                 override fun selectRange(initialSelection: Int, lastDraggedIndex: Int, minReached: Int, maxReached: Int) {
                     selectItemRange(
                         initialSelection,
-                        Math.max(0, lastDraggedIndex - positionOffset),
-                        Math.max(0, minReached - positionOffset),
+                        max(0, lastDraggedIndex - positionOffset),
+                        max(0, minReached - positionOffset),
                         maxReached - positionOffset
                     )
                     if (minReached != maxReached) {
@@ -405,4 +421,24 @@ class TimerAdapter(
         }
         holder.itemView.tag = holder
     }
+
+    override fun onAnimationStart(animation: Animation) {
+        if (actModeCallback.isSelectable) {
+            activity.apply {
+                add_btn.toggle(false)
+                delete_btn.toggle(true)
+            }
+        }
+    }
+
+    override fun onAnimationEnd(animation: Animation?) {
+        if (!actModeCallback.isSelectable) {
+            activity.apply {
+                add_btn.toggle(true)
+                delete_btn.toggle(false)
+            }
+        }
+    }
+
+    override fun onAnimationRepeat(animation: Animation) { }
 }

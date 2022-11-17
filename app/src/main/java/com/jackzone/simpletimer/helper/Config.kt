@@ -45,10 +45,6 @@ class Config(val context: Context) {
                     ?: context.getString(R.string.alarm))!!
         set(timerSoundTitle) = prefs.edit().putString(TIMER_SOUND_TITLE, timerSoundTitle).apply()
 
-    var timerMaxReminderSecs: Int
-        get() = prefs.getInt(TIMER_MAX_REMINDER_SECS, DEFAULT_MAX_TIMER_REMINDER_SECS)
-        set(timerMaxReminderSecs) = prefs.edit().putInt(TIMER_MAX_REMINDER_SECS, timerMaxReminderSecs).apply()
-
     var timerLabel: String?
         get() = prefs.getString(TIMER_LABEL, null)
         set(label) = prefs.edit().putString(TIMER_LABEL, label).apply()
@@ -66,4 +62,13 @@ class Config(val context: Context) {
     var yourAlarmSounds: String
         get() = prefs.getString(YOUR_ALARM_SOUNDS, "")!!
         set(yourAlarmSounds) = prefs.edit().putString(YOUR_ALARM_SOUNDS, yourAlarmSounds).apply()
+
+    var preventPhoneFromSleeping: Boolean
+        get() = prefs.getBoolean(PREVENT_PHONE_FROM_SLEEPING, true)
+        set(preventPhoneFromSleeping) = prefs.edit().putBoolean(PREVENT_PHONE_FROM_SLEEPING, preventPhoneFromSleeping).apply()
+
+    var timerMaxReminderSecs: Int
+        get() = prefs.getInt(TIMER_MAX_REMINDER_SECS, DEFAULT_MAX_TIMER_REMINDER_SECS)
+        set(timerMaxReminderSecs) = prefs.edit().putInt(TIMER_MAX_REMINDER_SECS, timerMaxReminderSecs).apply()
+
 }

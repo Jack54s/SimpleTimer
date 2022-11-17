@@ -12,10 +12,7 @@ fun View.hide() {
     visibility = GONE
 }
 
-fun View.toggle() {
-    visibility = if (visibility == VISIBLE) {
-        GONE
-    } else {
-        VISIBLE
-    }
+fun View.toggle(visible: Boolean) {
+    if (visible) show()
+    else hide()
 }
