@@ -17,9 +17,8 @@ import com.jackzone.simpletimer.helper.MINUTE_SECONDS
 import kotlinx.android.synthetic.main.dialog_custom_interval_picker.view.*
 
 class CustomIntervalPickerDialog(
-    val activity: Activity,
-    val selectedSeconds: Int = 0,
-    val showSeconds: Boolean = false,
+    private val activity: Activity,
+    private val selectedSeconds: Int = 0,
     val callback: (minutes: Int) -> Unit
 ) {
     private var dialog: AlertDialog? = null
@@ -27,7 +26,7 @@ class CustomIntervalPickerDialog(
 
     init {
         AlertDialog.Builder(activity)
-            .setPositiveButton(R.string.ok) { dialogInterface, i -> confirmReminder() }
+            .setPositiveButton(R.string.ok) { _, _ -> confirmReminder() }
             .setNegativeButton(R.string.cancel, null)
             .apply {
                 activity.setupDialogStuff(view, this) { alertDialog ->
@@ -37,7 +36,6 @@ class CustomIntervalPickerDialog(
             }
 
         view.apply {
-            dialog_radio_seconds.beVisibleIf(showSeconds)
             when {
                 selectedSeconds == 0 -> dialog_radio_view.check(R.id.dialog_radio_minutes)
                 selectedSeconds % DAY_SECONDS == 0 -> {
@@ -74,7 +72,7 @@ class CustomIntervalPickerDialog(
     private fun confirmReminder() {
         val value = view.dialog_custom_interval_value.text.toString().trim()
         val multiplier = getMultiplier(view.dialog_radio_view.checkedRadioButtonId)
-        val minutes = Integer.valueOf(if (value.isEmpty()) "0" else value)
+        val minutes = Integer.valueOf(value.ifEmpty { "0" })
         callback(minutes * multiplier)
         activity.hideKeyboard()
         dialog?.dismiss()

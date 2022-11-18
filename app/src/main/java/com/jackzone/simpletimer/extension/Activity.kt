@@ -1,26 +1,20 @@
 package com.jackzone.simpletimer.extension
 
 import android.app.Activity
-import android.app.TimePickerDialog
 import android.content.Context
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
-import android.media.RingtoneManager
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import com.jackzone.simpletimer.R
 import com.jackzone.simpletimer.dialog.CustomIntervalPickerDialog
 import com.jackzone.simpletimer.dialog.RadioGroupDialog
 import com.jackzone.simpletimer.helper.MINUTE_SECONDS
-import com.jackzone.simpletimer.helper.PERMISSION_READ_STORAGE
-import com.jackzone.simpletimer.helper.SILENT
 import com.jackzone.simpletimer.helper.isOnMainThread
-import com.jackzone.simpletimer.model.AlarmSound
 import com.jackzone.simpletimer.model.RadioItem
 import java.util.*
 
@@ -61,17 +55,10 @@ fun Activity.hideKeyboardSync() {
     currentFocus?.clearFocus()
 }
 
-fun Activity.showPickSecondsDialog(
-    curSeconds: Int, isSnoozePicker: Boolean = false, showSecondsAtCustomDialog: Boolean = false, showDuringDayOption: Boolean = false,
-    cancelCallback: (() -> Unit)? = null, callback: (seconds: Int) -> Unit
-) {
+fun Activity.showPickSecondsDialog(curSeconds: Int, cancelCallback: (() -> Unit)? = null, callback: (seconds: Int) -> Unit) {
     hideKeyboard()
     val seconds = TreeSet<Int>()
     seconds.apply {
-        if (!isSnoozePicker) {
-            add(-1)
-            add(0)
-        }
         add(1 * MINUTE_SECONDS)
         add(5 * MINUTE_SECONDS)
         add(10 * MINUTE_SECONDS)
@@ -82,7 +69,7 @@ fun Activity.showPickSecondsDialog(
 
     val items = ArrayList<RadioItem>(seconds.size + 1)
     seconds.mapIndexedTo(items) { index, value ->
-        RadioItem(index, getFormattedSeconds(value, !isSnoozePicker), value)
+        RadioItem(index, getFormattedSeconds(value), value)
     }
 
     var selectedIndex = 0
@@ -94,26 +81,15 @@ fun Activity.showPickSecondsDialog(
 
     items.add(RadioItem(-2, getString(R.string.custom)))
 
-    if (showDuringDayOption) {
-        items.add(RadioItem(-3, getString(R.string.during_day_at_hh_mm)))
-    }
-
-    RadioGroupDialog(this, items, selectedIndex, showOKButton = isSnoozePicker, cancelCallback = cancelCallback) {
-        when (it) {
+    RadioGroupDialog(this, items, selectedIndex, cancelCallback) { option ->
+        when (option) {
             -2 -> {
-                CustomIntervalPickerDialog(this, showSeconds = showSecondsAtCustomDialog) {
+                CustomIntervalPickerDialog(this) {
                     callback(it)
                 }
             }
-            -3 -> {
-                TimePickerDialog(
-                    this, R.style.Theme_SimpleTimer,
-                    { _, hourOfDay, minute -> callback(hourOfDay * -3600 + minute * -60) },
-                    curSeconds / 3600, curSeconds % 3600, config.use24HourFormat
-                ).show()
-            }
             else -> {
-                callback(it as Int)
+                callback(option as Int)
             }
         }
     }

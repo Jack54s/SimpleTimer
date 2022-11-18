@@ -92,7 +92,7 @@ class App: Application(), LifecycleObserver {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: TimerEvent.Finish) {
         timerDb.getTimer(event.timerId) { timer ->
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = getLaunchIntent() ?: Intent(this, MainActivity::class.java)
             val pendingIntent = PendingIntent.getActivity(this, event.timerId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             val notification = getTimerNotification(timer, pendingIntent)
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

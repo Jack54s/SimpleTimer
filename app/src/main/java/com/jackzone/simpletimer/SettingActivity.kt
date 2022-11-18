@@ -51,7 +51,7 @@ class SettingActivity : BaseActivity() {
     private fun setupTimerMaxReminder() {
         updateTimerMaxReminderText()
         setting_timer_max_reminder_holder.setOnClickListener {
-            showPickSecondsDialog(config.timerMaxReminderSecs, true, true) {
+            showPickSecondsDialog(config.timerMaxReminderSecs) {
                 config.timerMaxReminderSecs = if (it != 0) it else DEFAULT_MAX_TIMER_REMINDER_SECS
                 updateTimerMaxReminderText()
             }

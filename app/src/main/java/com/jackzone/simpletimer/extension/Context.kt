@@ -18,6 +18,7 @@ import android.text.style.RelativeSizeSpan
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.jackzone.simpletimer.BuildConfig.APPLICATION_ID
 import com.jackzone.simpletimer.R
 import com.jackzone.simpletimer.business.TimerService
 import com.jackzone.simpletimer.helper.*
@@ -258,43 +259,39 @@ fun Context.formatSecondsToTimeString(totalSeconds: Int): String {
     return result
 }
 
-fun Context.getFormattedSeconds(seconds: Int, showBefore: Boolean = true) = when (seconds) {
-    -1 -> getString(R.string.no_reminder)
-    0 -> getString(R.string.at_start)
+fun Context.getFormattedSeconds(seconds: Int) = when {
+    seconds < 0 && seconds > -60 * 60 * 24 -> {
+        val minutes = -seconds / 60
+        getString(R.string.during_day_at).format(minutes / 60, minutes % 60)
+    }
+    seconds % YEAR_SECONDS == 0 -> {
+        val base = R.plurals.by_years
+        resources.getQuantityString(base, seconds / YEAR_SECONDS, seconds / YEAR_SECONDS)
+    }
+    seconds % MONTH_SECONDS == 0 -> {
+        val base = R.plurals.by_months
+        resources.getQuantityString(base, seconds / MONTH_SECONDS, seconds / MONTH_SECONDS)
+    }
+    seconds % WEEK_SECONDS == 0 -> {
+        val base = R.plurals.by_weeks
+        resources.getQuantityString(base, seconds / WEEK_SECONDS, seconds / WEEK_SECONDS)
+    }
+    seconds % DAY_SECONDS == 0 -> {
+        val base = R.plurals.by_days
+        resources.getQuantityString(base, seconds / DAY_SECONDS, seconds / DAY_SECONDS)
+    }
+    seconds % HOUR_SECONDS == 0 -> {
+        val base = R.plurals.by_hours
+        resources.getQuantityString(base, seconds / HOUR_SECONDS, seconds / HOUR_SECONDS)
+    }
+    seconds % MINUTE_SECONDS == 0 -> {
+        val base = R.plurals.by_minutes
+        resources.getQuantityString(base, seconds / MINUTE_SECONDS, seconds / MINUTE_SECONDS)
+    }
     else -> {
-        when {
-            seconds < 0 && seconds > -60 * 60 * 24 -> {
-                val minutes = -seconds / 60
-                getString(R.string.during_day_at).format(minutes / 60, minutes % 60)
-            }
-            seconds % YEAR_SECONDS == 0 -> {
-                val base = if (showBefore) R.plurals.years_before else R.plurals.by_years
-                resources.getQuantityString(base, seconds / YEAR_SECONDS, seconds / YEAR_SECONDS)
-            }
-            seconds % MONTH_SECONDS == 0 -> {
-                val base = if (showBefore) R.plurals.months_before else R.plurals.by_months
-                resources.getQuantityString(base, seconds / MONTH_SECONDS, seconds / MONTH_SECONDS)
-            }
-            seconds % WEEK_SECONDS == 0 -> {
-                val base = if (showBefore) R.plurals.weeks_before else R.plurals.by_weeks
-                resources.getQuantityString(base, seconds / WEEK_SECONDS, seconds / WEEK_SECONDS)
-            }
-            seconds % DAY_SECONDS == 0 -> {
-                val base = if (showBefore) R.plurals.days_before else R.plurals.by_days
-                resources.getQuantityString(base, seconds / DAY_SECONDS, seconds / DAY_SECONDS)
-            }
-            seconds % HOUR_SECONDS == 0 -> {
-                val base = if (showBefore) R.plurals.hours_before else R.plurals.by_hours
-                resources.getQuantityString(base, seconds / HOUR_SECONDS, seconds / HOUR_SECONDS)
-            }
-            seconds % MINUTE_SECONDS == 0 -> {
-                val base = if (showBefore) R.plurals.minutes_before else R.plurals.by_minutes
-                resources.getQuantityString(base, seconds / MINUTE_SECONDS, seconds / MINUTE_SECONDS)
-            }
-            else -> {
-                val base = if (showBefore) R.plurals.seconds_before else R.plurals.by_seconds
-                resources.getQuantityString(base, seconds, seconds)
-            }
-        }
+        val base = R.plurals.by_seconds
+        resources.getQuantityString(base, seconds, seconds)
     }
 }
+
+fun Context.getLaunchIntent() = packageManager.getLaunchIntentForPackage(APPLICATION_ID)
