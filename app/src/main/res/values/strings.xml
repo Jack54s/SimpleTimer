@@ -1,7 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Simple Timer</string>
     <string name="alarm">Alarm</string>
     <string name="vibrate">Vibrate</string>
+    <string name="label">Label</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="your_sounds">Your sounds</string>
@@ -73,8 +75,8 @@
         <item quantity="other">%d seconds</item>
     </plurals>
     <string name="during_day_at">During the day at %02d:%02d</string>
-    <string name="custom">Custom</string>
     <string name="during_day_at_hh_mm">During the day at hh:mm</string>
+    <string name="custom">Custom</string>
     <string name="value">Value</string>
     <string name="seconds_raw">seconds</string>
     <string name="minutes_raw">minutes</string>

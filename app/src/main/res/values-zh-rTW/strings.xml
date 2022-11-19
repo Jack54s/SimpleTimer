@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">定時器</string>
+    <string name="alarm">Alarm</string>
+    <string name="vibrate">振動</string>
+    <string name="label">標籤</string>
+    <string name="ok">確認</string>
+    <string name="cancel">取消</string>
+    <string name="your_sounds">你的鈴聲</string>
+    <string name="system_sounds">系統鈴聲</string>
+    <string name="p_m">pm</string>
+    <string name="a_m">am</string>
+    <string name="no_sound">無鈴聲</string>
+    <string name="error">Error: %s</string>
+    <string name="add_new_sound">添加新的鈴聲</string>
+    <string name="remove">移除</string>
+    <string name="no_app_found">未找到可用應用</string>
+    <string name="delete">刪除</string>
+    <string name="no_post_notifications_permissions">要求推送通知權限</string>
+    <string name="timers_notification_msg">定時器正在運行</string>
+    <string name="timer_single_notification_label_msg">%s 定時器正在運行</string>
+    <plurals name="timer_notification_msg">
+        <item quantity="other">%d 個定時器正在運行</item>
+    </plurals>
+    <string name="timer">定時器</string>
+    <string name="time_expired">時間結束</string>
+    <string name="dismiss">關閉</string>
+    <string name="setting">設置</string>
+    <string name="prevent_phone_from_sleeping">阻止設備自動休眠</string>
+    <string name="max_reminder_duration">最長提醒時間</string>
+    <string name="use_english_language">強制使用英語</string>
+    <plurals name="days">
+        <item quantity="other">%d 天</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="other">%d 小時</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="other">%d 分鐘</item>
+    </plurals>
+    <plurals name="seconds">
+        <item quantity="other">%d 秒</item>
+    </plurals>
+    <plurals name="by_years">
+        <item quantity="other">%d 年</item>
+    </plurals>
+    <plurals name="by_months">
+        <item quantity="other">%d 月</item>
+    </plurals>
+    <plurals name="by_weeks">
+        <item quantity="other">%d 週</item>
+    </plurals>
+    <plurals name="by_days">
+        <item quantity="other">%d 天</item>
+    </plurals>
+    <plurals name="by_hours">
+        <item quantity="other">%d 小時</item>
+    </plurals>
+    <plurals name="by_minutes">
+        <item quantity="other">%d 分鐘</item>
+    </plurals>
+    <plurals name="by_seconds">
+        <item quantity="other">%d 秒</item>
+    </plurals>
+    <string name="during_day_at">在日間的 %02d:%02d 內</string>
+    <string name="during_day_at_hh_mm">在日間的 小時:分鐘 內</string>
+    <string name="custom">自定義</string>
+    <string name="value">值</string>
+    <string name="seconds_raw">秒</string>
+    <string name="minutes_raw">分鐘</string>
+    <string name="hours_raw">小時</string>
+    <string name="days_raw">天</string>
+</resources>

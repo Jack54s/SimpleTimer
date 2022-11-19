@@ -6,6 +6,7 @@
     android:id="@+id/main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_bg"
     android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -122,8 +123,8 @@
         android:layout_margin="12dp"
         android:theme="@style/CustomFloatingButtonTheme"
         android:src="@drawable/ic_plus_vector"
-        app:tint="@color/color_bg"
-        app:backgroundTint="@color/black" />
+        app:tint="@color/color_focus_text"
+        app:backgroundTint="@color/color_focus_bg" />
 
     <FrameLayout
         android:id="@+id/delete_btn_wrapper"
@@ -143,8 +144,8 @@
             android:textColor="@color/color_text"
             android:textSize="@dimen/normal_text_size"
             android:fontWeight="900"
-            app:layout_behavior="@string/bottom_sheet_behavior"
-            app:elevation="2dp" />
+            android:background="@drawable/bottom_button_border"
+            app:backgroundTint="@null" />
 
     </FrameLayout>
 

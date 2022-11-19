@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/setting_coordinator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/color_bg">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/setting_app_bar_layout"
@@ -37,25 +37,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/bigger_margin"
             android:orientation="vertical">
-
-            <RelativeLayout
-                android:id="@+id/setting_use_english_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/activity_margin"
-                android:layout_marginBottom="@dimen/medium_margin">
-
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:id="@+id/setting_use_english"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/SettingCheckboxStyle"
-                    android:text="@string/use_english_language"
-                    app:buttonTint="@color/color_text" />
-
-            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/setting_prevent_phone_from_sleeping_holder"

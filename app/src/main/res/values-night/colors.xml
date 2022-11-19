@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="color_text">#FF3A3A3A</color>
-    <color name="color_bg">@color/white</color>
-    <color name="activated_item_foreground">#44888888</color>
+    <color name="color_text">#FFDDDDDD</color>
+    <color name="color_bg">@color/black</color>
+    <color name="activated_item_foreground">#44CCCCCC</color>
     <color name="pressed_item_foreground">#08000000</color>
-    <color name="border">#FFF3F3F3</color>
-    <color name="color_focus_bg">@color/black</color>
-    <color name="color_focus_text">@color/white</color>
+    <color name="border">#FF0F0F0F</color>
+    <color name="color_focus_bg">@color/white</color>
+    <color name="color_focus_text">@color/black</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/color_text</color>
 
     <color name="black">#FF000000</color>

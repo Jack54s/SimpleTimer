@@ -16,7 +16,6 @@ class SettingActivity : BaseActivity() {
         setContentView(R.layout.activity_setting)
         setSupportActionBar(setting_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setupUseEnglish()
         setupPreventPhoneFromSleeping()
         setupTimerMaxReminder()
     }
@@ -29,15 +28,6 @@ class SettingActivity : BaseActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun setupUseEnglish() {
-        setting_use_english.isChecked = config.useEnglish
-        setting_use_english_holder.setOnClickListener {
-            setting_use_english.toggle()
-            config.useEnglish = setting_use_english.isChecked
-            exitProcess(0)
-        }
     }
 
     private fun setupPreventPhoneFromSleeping() {
