@@ -5,7 +5,6 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.RingtoneManager
@@ -25,7 +24,6 @@ import com.jackzone.simpletimer.helper.*
 import com.jackzone.simpletimer.model.AlarmSound
 import com.jackzone.simpletimer.model.Timer
 import com.jackzone.simpletimer.receiver.HideTimerReceiver
-import java.util.*
 
 val Context.config: Config get() = Config.newInstance(applicationContext)
 val Context.timerDb: TimerService get() = TimerService(this)

@@ -16,8 +16,6 @@ const val TIMER_LABEL = "timer_label"
 const val TIMER_MAX_REMINDER_SECS = "timer_max_reminder_secs"
 const val DEFAULT_MAX_TIMER_REMINDER_SECS = 60
 const val TIMER_LAST_CONFIG = "timer_last_config"
-const val USE_24_HOUR_FORMAT = "use_24_hour_format"
-const val USE_ENGLISH = "use_english"
 const val PREVENT_PHONE_FROM_SLEEPING = "prevent_phone_from_sleeping"
 
 

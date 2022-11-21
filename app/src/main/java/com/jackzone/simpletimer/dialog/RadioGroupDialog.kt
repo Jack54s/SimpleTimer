@@ -16,7 +16,7 @@ class RadioGroupDialog(
     private val activity: Activity,
     private val items: ArrayList<RadioItem>,
     private val checkedItemId: Int = -1,
-    val cancelCallback: (() -> Unit)? = null,
+    private val cancelCallback: (() -> Unit)? = null,
     val callback: (newValue: Any) -> Unit
 ) {
     private var dialog: AlertDialog? = null

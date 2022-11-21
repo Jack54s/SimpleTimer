@@ -20,11 +20,11 @@ import kotlinx.android.synthetic.main.dialog_select_alarm_sound.view.*
 
 class SelectAlarmSoundDialog(
     val activity: BaseActivity,
-    val currentUri: String,
-    val audioStream: Int,
-    val pickAudioIntentId: Int,
-    val type: Int,
-    val loopAudio: Boolean,
+    private val currentUri: String,
+    private val audioStream: Int,
+    private val pickAudioIntentId: Int,
+    type: Int,
+    private val loopAudio: Boolean,
     val onAlarmPicked: (alarmSound: AlarmSound?) -> Unit,
     val onAlarmSoundDeleted: (alarmSound: AlarmSound) -> Unit
 ) {

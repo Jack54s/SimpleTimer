@@ -1,14 +1,12 @@
 package com.jackzone.simpletimer
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import com.jackzone.simpletimer.dialog.PickSecondsDialog
 import com.jackzone.simpletimer.extension.config
 import com.jackzone.simpletimer.extension.formatSecondsToTimeString
-import com.jackzone.simpletimer.extension.showPickSecondsDialog
 import com.jackzone.simpletimer.helper.DEFAULT_MAX_TIMER_REMINDER_SECS
 import kotlinx.android.synthetic.main.activity_setting.*
-import kotlin.system.exitProcess
 
 class SettingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +39,7 @@ class SettingActivity : BaseActivity() {
     private fun setupTimerMaxReminder() {
         updateTimerMaxReminderText()
         setting_timer_max_reminder_holder.setOnClickListener {
-            showPickSecondsDialog(config.timerMaxReminderSecs) {
+            PickSecondsDialog(this, config.timerMaxReminderSecs) {
                 config.timerMaxReminderSecs = if (it != 0) it else DEFAULT_MAX_TIMER_REMINDER_SECS
                 updateTimerMaxReminderText()
             }

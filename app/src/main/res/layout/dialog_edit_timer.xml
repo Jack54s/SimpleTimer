@@ -78,10 +78,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="@dimen/activity_margin"
-            android:paddingTop="@dimen/medium_margin"
-            android:paddingEnd="@dimen/activity_margin"
-            android:paddingBottom="@dimen/medium_margin"
+            android:padding="@dimen/activity_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_timer_sound"
@@ -124,6 +121,53 @@
                     android:theme="@style/CustomTextCursor" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_margin"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edit_timer_label_holder">
+
+            <ImageView
+                android:id="@+id/edit_timer_reminder_duration_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_reminder"
+                app:tint="@color/color_text" />
+
+            <RelativeLayout
+                android:id="@+id/edit_timer_reminder_duration_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/normal_margin">
+
+                <TextView
+                    android:id="@+id/edit_timer_reminder_duration_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/max_reminder_duration"
+                    android:textSize="@dimen/normal_text_size"
+                    android:textColor="@color/color_text" />
+
+                <TextView
+                    android:id="@+id/edit_timer_reminder_duration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/edit_timer_reminder_duration_label"
+                    android:alpha="0.6"
+                    android:text="1 minutes"
+                    android:textFontWeight="300"
+                    android:textSize="@dimen/small_text_size"
+                    android:textColor="@color/color_text" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

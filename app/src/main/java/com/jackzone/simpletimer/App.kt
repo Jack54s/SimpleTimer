@@ -29,8 +29,6 @@ class App: Application(), LifecycleObserver {
         super.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         EventBus.getDefault().register(this)
-
-//        checkUseEnglish()
     }
 
     override fun onTerminate() {
@@ -106,7 +104,7 @@ class App: Application(), LifecycleObserver {
             updateTimerState(event.timerId, TimerState.Finished)
             Handler(Looper.getMainLooper()).postDelayed({
                 hideTimerNotification(event.timerId)
-            }, config.timerMaxReminderSecs * 1000L)
+            }, timer.maxReminderDuration * 1000L)
         }
     }
 

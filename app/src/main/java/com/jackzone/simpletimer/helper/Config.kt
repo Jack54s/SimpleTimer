@@ -2,7 +2,6 @@ package com.jackzone.simpletimer.helper
 
 import android.content.Context
 import android.media.RingtoneManager
-import android.text.format.DateFormat
 import com.jackzone.simpletimer.R
 import com.jackzone.simpletimer.extension.gson.gson
 import com.jackzone.simpletimer.model.Timer
@@ -63,10 +62,6 @@ class Config(val context: Context) {
     var yourAlarmSounds: String
         get() = prefs.getString(YOUR_ALARM_SOUNDS, "")!!
         set(yourAlarmSounds) = prefs.edit().putString(YOUR_ALARM_SOUNDS, yourAlarmSounds).apply()
-
-    var useEnglish: Boolean
-        get() = prefs.getBoolean(USE_ENGLISH, false)
-        set(useEnglish) = prefs.edit().putBoolean(USE_ENGLISH, useEnglish).apply()
 
     var preventPhoneFromSleeping: Boolean
         get() = prefs.getBoolean(PREVENT_PHONE_FROM_SLEEPING, true)

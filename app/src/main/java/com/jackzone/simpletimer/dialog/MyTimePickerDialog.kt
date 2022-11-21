@@ -6,19 +6,12 @@ import com.jackzone.simpletimer.R
 import com.jackzone.simpletimer.extension.setupDialogStuff
 import kotlinx.android.synthetic.main.dialog_my_time_picker.view.*
 
-class MyTimePickerDialog(val activity: Activity, val initialSeconds: Int, val callback: (result: Int) -> Unit) {
+class MyTimePickerDialog(val activity: Activity, private val initialSeconds: Int, val callback: (result: Int) -> Unit) {
 
     private val view = activity.layoutInflater.inflate(R.layout.dialog_my_time_picker, null)
 
     init {
         view.apply {
-//            val textColor = activity.getProperTextColor()
-//            arrayOf(my_time_picker_hours, my_time_picker_minutes, my_time_picker_seconds).forEach {
-//                it.textColor = textColor
-//                it.selectedTextColor = textColor
-//                it.dividerColor = textColor
-//            }
-
             my_time_picker_hours.value = initialSeconds / 3600
             my_time_picker_minutes.value = (initialSeconds) / 60 % 60
             my_time_picker_seconds.value = initialSeconds % 60

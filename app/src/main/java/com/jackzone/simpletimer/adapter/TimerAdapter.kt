@@ -4,7 +4,6 @@ import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.jackzone.simpletimer.BaseActivity
@@ -71,7 +70,6 @@ class TimerAdapter(
         }
     }
 
-    private val resources = activity.resources!!
     private val layoutInflater = activity.layoutInflater
     private var actModeCallback: MyActionModeCallback
     private var selectedKeys = LinkedHashSet<Int>()

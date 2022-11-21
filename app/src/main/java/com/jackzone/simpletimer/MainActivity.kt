@@ -8,7 +8,6 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.OpenableColumns
 import android.view.WindowManager
-import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jackzone.simpletimer.adapter.TimerAdapter
@@ -54,6 +53,7 @@ class MainActivity : BaseActivity() {
                 config.timerSoundUri,
                 config.timerSoundTitle,
                 config.timerLabel ?: "",
+                config.timerMaxReminderSecs,
                 System.currentTimeMillis(),
                 config.timerChannelId
             ))

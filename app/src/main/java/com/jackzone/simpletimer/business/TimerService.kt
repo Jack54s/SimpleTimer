@@ -1,7 +1,6 @@
 package com.jackzone.simpletimer.business
 
 import android.content.Context
-import com.jackzone.simpletimer.dao.TimerDao
 import com.jackzone.simpletimer.database.AppDatabase
 import com.jackzone.simpletimer.helper.ensureBackgroundThread
 import com.jackzone.simpletimer.model.Timer

@@ -1,18 +1,15 @@
 package com.jackzone.simpletimer.dialog
 
-import android.app.Activity
 import android.media.AudioManager
 import android.media.RingtoneManager
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.jackzone.simpletimer.BaseActivity
 import com.jackzone.simpletimer.R
-import com.jackzone.simpletimer.business.TimerService
 import com.jackzone.simpletimer.extension.*
+import com.jackzone.simpletimer.helper.DEFAULT_MAX_TIMER_REMINDER_SECS
 import com.jackzone.simpletimer.helper.PICK_AUDIO_FILE_INTENT_ID
 import com.jackzone.simpletimer.model.AlarmSound
 import com.jackzone.simpletimer.model.Timer
-import com.jackzone.simpletimer.model.TimerState
 import kotlinx.android.synthetic.main.dialog_edit_timer.view.*
 
 class EditTimerDialog(private val activity: BaseActivity, val timer: Timer, val callback: () -> Unit) {
@@ -31,6 +28,7 @@ class EditTimerDialog(private val activity: BaseActivity, val timer: Timer, val 
             timer.soundUri,
             timer.soundTitle,
             timer.label,
+            timer.maxReminderDuration,
             timer.createdAt,
             timer.channelId
         )
@@ -66,6 +64,14 @@ class EditTimerDialog(private val activity: BaseActivity, val timer: Timer, val 
             }
 
             edit_timer.setText(tempTimer.label)
+
+            updateTimerMaxReminderText()
+            edit_timer_reminder_duration_holder.setOnClickListener {
+                PickSecondsDialog(activity, tempTimer.maxReminderDuration) {
+                    tempTimer.maxReminderDuration = if (it != 0) it else DEFAULT_MAX_TIMER_REMINDER_SECS
+                    updateTimerMaxReminderText()
+                }
+            }
         }
         AlertDialog.Builder(activity)
             .setPositiveButton(R.string.ok) { dialog, _ ->
@@ -74,6 +80,7 @@ class EditTimerDialog(private val activity: BaseActivity, val timer: Timer, val 
                 timer.soundUri = tempTimer.soundUri
                 timer.soundTitle = tempTimer.soundTitle
                 timer.label = view.edit_timer.text.toString().trim()
+                timer.maxReminderDuration = tempTimer.maxReminderDuration
                 timer.channelId = tempTimer.channelId
                 timerDb.insertOrUpdateTimer(timer) {
                     activity.config.timerLastConfig = timer
@@ -98,11 +105,10 @@ class EditTimerDialog(private val activity: BaseActivity, val timer: Timer, val 
     private fun restoreLastAlarm() {
         if (timer.id == null) {
             activity.config.timerLastConfig?.let { lastConfig ->
-                timer.label = lastConfig.label
                 timer.seconds = lastConfig.seconds
+                timer.vibrate = lastConfig.vibrate
                 timer.soundTitle = lastConfig.soundTitle
                 timer.soundUri = lastConfig.soundUri
-                timer.vibrate = lastConfig.vibrate
             }
         }
     }
@@ -116,5 +122,9 @@ class EditTimerDialog(private val activity: BaseActivity, val timer: Timer, val 
         tempTimer.soundUri = alarmSound.uri
         tempTimer.channelId = null
         view.edit_timer_sound.text = alarmSound.title
+    }
+
+    private fun updateTimerMaxReminderText() {
+        view.edit_timer_reminder_duration.text = activity.formatSecondsToTimeString(tempTimer.maxReminderDuration)
     }
 }

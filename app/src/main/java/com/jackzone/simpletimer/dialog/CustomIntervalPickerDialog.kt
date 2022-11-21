@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import com.jackzone.simpletimer.R
-import com.jackzone.simpletimer.extension.beVisibleIf
 import com.jackzone.simpletimer.extension.hideKeyboard
 import com.jackzone.simpletimer.extension.setupDialogStuff
 import com.jackzone.simpletimer.extension.showKeyboard

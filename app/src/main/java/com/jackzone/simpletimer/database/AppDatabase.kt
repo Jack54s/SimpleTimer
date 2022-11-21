@@ -51,6 +51,7 @@ abstract class AppDatabase : RoomDatabase() {
                         soundUri = config.timerSoundUri,
                         soundTitle = config.timerSoundTitle,
                         label = config.timerLabel ?: "",
+                        maxReminderDuration = config.timerMaxReminderSecs,
                         createdAt = System.currentTimeMillis(),
                         channelId = config.timerChannelId,
                     )
