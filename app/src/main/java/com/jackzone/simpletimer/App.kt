@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.ThreadMode
 class App: Application(), LifecycleObserver {
 
     private var countDownTimers = mutableMapOf<Int, CountDownTimer>()
+    private val mHandler = Handler(Looper.getMainLooper())
 
     override fun onCreate() {
         super.onCreate()
@@ -74,6 +75,7 @@ class App: Application(), LifecycleObserver {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: TimerEvent.Start) {
+        mHandler.removeCallbacksAndMessages(event.timerId)
         val countDownTimer = object : CountDownTimer(event.duration, 1000) {
             override fun onTick(tick: Long) {
                 updateTimerState(event.timerId, TimerState.Running(event.duration, tick))
@@ -102,9 +104,9 @@ class App: Application(), LifecycleObserver {
             }
 
             updateTimerState(event.timerId, TimerState.Finished)
-            Handler(Looper.getMainLooper()).postDelayed({
+            mHandler.postDelayed({
                 hideTimerNotification(event.timerId)
-            }, timer.maxReminderDuration * 1000L)
+            }, event.timerId, timer.maxReminderDuration * 1000L)
         }
     }
 
