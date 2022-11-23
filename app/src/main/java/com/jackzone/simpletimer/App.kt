@@ -25,6 +25,7 @@ class App: Application(), LifecycleObserver {
 
     private var countDownTimers = mutableMapOf<Int, CountDownTimer>()
     private val mHandler = Handler(Looper.getMainLooper())
+    private var isBackground = true
 
     override fun onCreate() {
         super.onCreate()
@@ -39,6 +40,7 @@ class App: Application(), LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     private fun onAppBackgrounded() {
+        isBackground = true
         timerDb.getTimers { timers ->
             if (timers.any { it.state is TimerState.Running }) {
                 startTimerService(this)
@@ -48,6 +50,7 @@ class App: Application(), LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun onAppForegrounded() {
+        isBackground = false
         EventBus.getDefault().post(TimerStopService)
         timerDb.getTimers { timers ->
             val runningTimers = timers.filter { it.state is TimerState.Running }
@@ -75,7 +78,7 @@ class App: Application(), LifecycleObserver {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: TimerEvent.Start) {
-        mHandler.removeCallbacksAndMessages(event.timerId)
+        if (!hasNotification(event.timerId)) mHandler.removeCallbacksAndMessages(event.timerId)
         val countDownTimer = object : CountDownTimer(event.duration, 1000) {
             override fun onTick(tick: Long) {
                 updateTimerState(event.timerId, TimerState.Running(event.duration, tick))
@@ -87,6 +90,10 @@ class App: Application(), LifecycleObserver {
             }
         }.start()
         countDownTimers[event.timerId] = countDownTimer
+
+        // When users trigger notification restart action, app is background.
+        // Timer updates asynchronously, make sure we show the notification correctly.
+        if (isBackground) mHandler.postDelayed({ startTimerService(this) }, 1000)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

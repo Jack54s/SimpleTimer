@@ -24,6 +24,7 @@ import com.jackzone.simpletimer.helper.*
 import com.jackzone.simpletimer.model.AlarmSound
 import com.jackzone.simpletimer.model.Timer
 import com.jackzone.simpletimer.receiver.HideTimerReceiver
+import com.jackzone.simpletimer.receiver.RestartTimerReceiver
 
 val Context.config: Config get() = Config.newInstance(applicationContext)
 val Context.timerDb: TimerService get() = TimerService(this)
@@ -146,6 +147,13 @@ fun Context.getHideTimerPendingIntent(timerId: Int): PendingIntent {
     return PendingIntent.getBroadcast(this, timerId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 }
 
+fun Context.getRestartTimerPendingIntent(timerId: Int, seconds: Int): PendingIntent {
+    val intent = Intent(this, RestartTimerReceiver::class.java)
+    intent.putExtra(TIMER_ID, timerId)
+    intent.putExtra(TIMER_SECONDS, seconds)
+    return PendingIntent.getBroadcast(this, timerId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+}
+
 fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent): Notification {
     var soundUri = timer.soundUri
     if (soundUri == SILENT) {
@@ -205,6 +213,11 @@ fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent): No
             R.drawable.ic_cross_vector,
             getString(R.string.dismiss),
             getHideTimerPendingIntent(timer.id!!)
+        )
+        .addAction(
+            R.drawable.ic_reset_vector,
+            getString(R.string.restart),
+            getRestartTimerPendingIntent(timer.id!!, timer.seconds)
         )
 
     builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -293,3 +306,11 @@ fun Context.getFormattedSeconds(seconds: Int) = when {
 }
 
 fun Context.getLaunchIntent() = packageManager.getLaunchIntentForPackage(APPLICATION_ID)
+
+fun Context.hasNotification(id: Int): Boolean {
+    val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    for (notification in manager.activeNotifications) {
+        if (notification.id == id) return true
+    }
+    return false
+}
