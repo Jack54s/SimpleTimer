@@ -231,7 +231,7 @@ fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent): No
     return notification
 }
 
-fun Context.getSilentTimerNotification(id: Int, label: String, seconds: Int, pendingIntent: PendingIntent): Notification {
+fun Context.getSilentTimerNotification(timer: Timer, pendingIntent: PendingIntent): Notification {
     val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     val name = getString(R.string.timer)
     if (isOreoPlus()) {
@@ -246,7 +246,7 @@ fun Context.getSilentTimerNotification(id: Int, label: String, seconds: Int, pen
     }
 
     return NotificationCompat.Builder(this, SILENT)
-        .setContentTitle(label.ifEmpty { name })
+        .setContentTitle(timer.label.ifEmpty { name })
         .setContentText(getString(R.string.time_expired))
         .setSmallIcon(R.drawable.ic_hourglass_vector)
         .setContentIntent(pendingIntent)
@@ -257,12 +257,12 @@ fun Context.getSilentTimerNotification(id: Int, label: String, seconds: Int, pen
         .addAction(
             R.drawable.ic_cross_vector,
             getString(R.string.dismiss),
-            getHideTimerPendingIntent(id!!)
+            getHideTimerPendingIntent(timer.id!!)
         )
         .addAction(
             R.drawable.ic_reset_vector,
             getString(R.string.restart),
-            getRestartTimerPendingIntent(id!!, seconds)
+            getRestartTimerPendingIntent(timer.id!!, timer.seconds)
         )
         .build()
 }

@@ -94,7 +94,7 @@ class TimerService : Service() {
             }
         }
 
-        val builder = NotificationCompat.Builder(this)
+        val builder = NotificationCompat.Builder(this, channelId)
             .setContentTitle(title)
             .setContentText(contentText)
             .setSmallIcon(R.drawable.ic_hourglass_vector)
@@ -103,7 +103,6 @@ class TimerService : Service() {
             .setSound(null)
             .setOngoing(true)
             .setAutoCancel(true)
-            .setChannelId(channelId)
 
         if (firstRunningTimerId != INVALID_TIMER_ID) {
             val intent = Intent(this, MainActivity::class.java)

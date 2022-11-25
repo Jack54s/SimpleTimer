@@ -114,7 +114,7 @@ class App: Application(), LifecycleObserver {
             mHandler.postDelayed({
                 if (hasNotification(event.timerId)) {
                     try {
-                        val notification = getSilentTimerNotification(event.timerId, timer.label, timer.seconds, pendingIntent)
+                        val notification = getSilentTimerNotification(timer, pendingIntent)
                         notificationManager.notify(event.timerId, notification)
                     } catch (e: Exception) {
                         showErrorToast(e)
