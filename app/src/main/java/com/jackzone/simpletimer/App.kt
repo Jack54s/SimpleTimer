@@ -112,7 +112,14 @@ class App: Application(), LifecycleObserver {
 
             updateTimerState(event.timerId, TimerState.Finished)
             mHandler.postDelayed({
-                hideTimerNotification(event.timerId)
+                if (hasNotification(event.timerId)) {
+                    try {
+                        val notification = getSilentTimerNotification(event.timerId, timer.label, timer.seconds, pendingIntent)
+                        notificationManager.notify(event.timerId, notification)
+                    } catch (e: Exception) {
+                        showErrorToast(e)
+                    }
+                }
             }, event.timerId, timer.maxReminderDuration * 1000L)
         }
     }

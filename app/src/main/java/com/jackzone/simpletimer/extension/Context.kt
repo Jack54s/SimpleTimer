@@ -198,7 +198,7 @@ fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent): No
         getString(R.string.timer)
     }
 
-    val builder = NotificationCompat.Builder(this)
+    val builder = NotificationCompat.Builder(this, channelId)
         .setContentTitle(title)
         .setContentText(getString(R.string.time_expired))
         .setSmallIcon(R.drawable.ic_hourglass_vector)
@@ -208,7 +208,6 @@ fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent): No
         .setCategory(Notification.CATEGORY_EVENT)
         .setAutoCancel(true)
         .setSound(Uri.parse(soundUri), AudioManager.STREAM_ALARM)
-        .setChannelId(channelId)
         .addAction(
             R.drawable.ic_cross_vector,
             getString(R.string.dismiss),
@@ -230,6 +229,42 @@ fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent): No
     val notification = builder.build()
     notification.flags = notification.flags or Notification.FLAG_INSISTENT
     return notification
+}
+
+fun Context.getSilentTimerNotification(id: Int, label: String, seconds: Int, pendingIntent: PendingIntent): Notification {
+    val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    val name = getString(R.string.timer)
+    if (isOreoPlus()) {
+        NotificationChannel(SILENT, name, NotificationManager.IMPORTANCE_LOW).apply {
+            setBypassDnd(false)
+            enableLights(false)
+            setSound(null, null)
+            vibrationPattern = longArrayOf(0L)
+            enableVibration(false)
+            notificationManager.createNotificationChannel(this)
+        }
+    }
+
+    return NotificationCompat.Builder(this, SILENT)
+        .setContentTitle(label.ifEmpty { name })
+        .setContentText(getString(R.string.time_expired))
+        .setSmallIcon(R.drawable.ic_hourglass_vector)
+        .setContentIntent(pendingIntent)
+        .setPriority(NotificationCompat.PRIORITY_MAX)
+        .setDefaults(Notification.DEFAULT_LIGHTS)
+        .setCategory(Notification.CATEGORY_EVENT)
+        .setAutoCancel(true)
+        .addAction(
+            R.drawable.ic_cross_vector,
+            getString(R.string.dismiss),
+            getHideTimerPendingIntent(id!!)
+        )
+        .addAction(
+            R.drawable.ic_reset_vector,
+            getString(R.string.restart),
+            getRestartTimerPendingIntent(id!!, seconds)
+        )
+        .build()
 }
 
 fun Context.hideTimerNotification(id: Int) {

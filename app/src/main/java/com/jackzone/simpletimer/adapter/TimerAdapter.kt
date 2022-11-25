@@ -1,5 +1,7 @@
 package com.jackzone.simpletimer.adapter
 
+import android.app.NotificationManager
+import android.content.Context
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jackzone.simpletimer.BaseActivity
 import com.jackzone.simpletimer.R
 import com.jackzone.simpletimer.extension.*
+import com.jackzone.simpletimer.helper.isOreoPlus
 import com.jackzone.simpletimer.interfaces.MyActionModeCallback
 import com.jackzone.simpletimer.model.Timer
 import com.jackzone.simpletimer.model.TimerEvent
@@ -334,6 +337,15 @@ class TimerAdapter(
     }
 
     private fun deleteTimer(timer: Timer) {
+        if (isOreoPlus()) {
+            try {
+                val notificationManager =
+                    activity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                timer.channelId?.let {
+                    notificationManager.deleteNotificationChannel(it)
+                }
+            } catch (e: Exception) { }
+        }
         EventBus.getDefault().post(TimerEvent.Delete(timer.id!!))
         activity.hideTimerNotification(timer.id!!)
     }
