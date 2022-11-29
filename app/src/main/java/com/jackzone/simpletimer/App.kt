@@ -79,6 +79,7 @@ class App: Application(), LifecycleObserver {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: TimerEvent.Start) {
         if (!hasNotification(event.timerId)) mHandler.removeCallbacksAndMessages(event.timerId)
+        else hideTimerNotification(event.timerId)
         val countDownTimer = object : CountDownTimer(event.duration, 1000) {
             override fun onTick(tick: Long) {
                 updateTimerState(event.timerId, TimerState.Running(event.duration, tick))
