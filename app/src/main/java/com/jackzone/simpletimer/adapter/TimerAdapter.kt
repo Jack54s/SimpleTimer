@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.activity.OnBackPressedCallback
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -131,18 +132,20 @@ class TimerAdapter(
     }
 
     init {
-        activity.select_all_btn.setOnClickListener {
-            if (itemCount == selectedKeys.size) {
-                finishActMode()
-            } else {
-                selectAll()
+        activity.apply {
+            select_all_btn.setOnClickListener {
+                if (itemCount == selectedKeys.size) {
+                    finishActMode()
+                } else {
+                    selectAll()
+                }
             }
-        }
-        activity.cancel_btn.setOnClickListener {
-            finishActMode()
-        }
-        activity.delete_btn.setOnClickListener {
-            if (selectedKeys.isNotEmpty()) deleteItems()
+            cancel_btn.setOnClickListener {
+                finishActMode()
+            }
+            delete_btn.setOnClickListener {
+                if (selectedKeys.isNotEmpty()) deleteItems()
+            }
         }
         actModeCallback = object : MyActionModeCallback() {
             override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
@@ -177,6 +180,15 @@ class TimerAdapter(
                 onActionModeDestroyed()
             }
         }
+        activity.onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (!actModeCallback.isSelectable) {
+                    activity.finish()
+                } else {
+                    finishActMode()
+                }
+            }
+        })
         setupDragListener(true)
     }
 
